@@ -27,9 +27,11 @@ function tggrWrapper( $ ) {
 
 			$( tggr.mediaItemContainer ).removeClass('no-js');
 
-			// Attach callback to post-render events.
-			$( tggr.mediaItemContainer ).on( 'tggr-rendered', tggr.afterRender );
-			twttr.events.bind( 'loaded', tggr.afterRender );
+			// Attach callback to post-render events, only if we're multiple-columns.
+			if ( ! $( tggr.mediaItemContainer ).hasClass('one-column') ) {
+				$( tggr.mediaItemContainer ).on( 'tggr-rendered', tggr.afterRender );
+				twttr.events.bind( 'loaded', tggr.afterRender );
+			}
 
 			tggr.retrieveNewItems();
 			setInterval( tggr.retrieveNewItems, tggrData.refreshInterval * 1000 );	// convert to milliseconds
@@ -89,6 +91,10 @@ function tggrWrapper( $ ) {
 		 * Reset Masonry after we render new items.
 		 */
 		afterRender: function(){
+			if ( $( tggr.mediaItemContainer ).hasClass('one-column') ) {
+				// Bail if 1-column.
+				return;
+			}
 			if ( tggr.msnry ) {
 				tggr.msnry.destroy();
 			}

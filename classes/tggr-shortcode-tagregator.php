@@ -83,11 +83,18 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		 * @return string
 		 */
 		public function shortcode_tagregator( $attributes ) {
-			$attributes = shortcode_atts( array( 'hashtag' => '' ), $attributes );
+			$attributes = shortcode_atts( array(
+				'hashtag' => '',
+				'layout'  => 'two-column',
+			), $attributes );
 			$items = array();
 
 			if ( $attributes['hashtag'] ) {
 				$items = self::get_media_items( $attributes['hashtag'] );
+			}
+
+			if ( ! in_array( $attributes['layout'], array( 'one-column', 'two-column' ) ) ) {
+				$attributes['layout'] = 'two-column';
 			}
 
 			ob_start();

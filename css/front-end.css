@@ -33,6 +33,13 @@ body.tggr-page:not(.sidebar) .entry-content {
 		width: 98%;
 	}
 
+	.one-column .tggr-msnry-1,
+	.one-column .tggr-msnry-2 {
+		margin-left: 0;
+		margin-right: 0;
+		width: 100%;
+	}
+
 	.tggr-media-item {
 		margin-top: 10px;
 		margin-bottom: 10px;
