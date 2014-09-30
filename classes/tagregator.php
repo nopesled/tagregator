@@ -146,9 +146,25 @@ if ( ! class_exists( 'Tagregator' ) ) {
 		 */
 		public static function load_resources() {
 			wp_register_script(
+				self::PREFIX . 'masonry',
+				plugins_url( 'javascript/masonry.min.js', dirname( __FILE__ ) ),
+				array(),
+				self::VERSION,
+				true
+			);
+
+			wp_register_script(
+				'twitter',
+				'//platform.twitter.com/widgets.js',
+				array(),
+				false,
+				true
+			);
+
+			wp_register_script(
 				self::PREFIX . 'front-end',
 				plugins_url( 'javascript/front-end.js', dirname( __FILE__ ) ),
-				array( 'jquery' ),
+				array( 'jquery', self::PREFIX . 'masonry', 'twitter' ),
 				self::VERSION,
 				true
 			);

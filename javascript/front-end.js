@@ -9,20 +9,26 @@
 function tggrWrapper( $ ) {
 	var tggr = {
 
+		msnry: false,
+
 		/**
 		 * Initialization
 		 */
 		init : function() {
-			if( typeof tggrData === 'undefined' ) {
+			if ( typeof tggrData === 'undefined' ) {
 				return;
 			}
-			
+
 			tggr.prefix             = 'tggr_';
 			tggr.cssPrefix          = 'tggr-';
 			tggr.mediaItemContainer = '#' + tggr.cssPrefix + 'media-item-container';
 			tggr.mediaItem          = '.' + tggr.cssPrefix + 'media-item';
 			tggr.existingItemIDs    = tggr.getExistingItemIDs();
-			
+
+			// Attach callback to post-render events.
+			$( tggr.mediaItemContainer ).on( 'tggr-rendered', tggr.afterRender );
+			twttr.events.bind( 'loaded', tggr.afterRender );
+
 			tggr.retrieveNewItems();
 			setInterval( tggr.retrieveNewItems, tggrData.refreshInterval * 1000 );	// convert to milliseconds
 		},
@@ -65,13 +71,33 @@ function tggrWrapper( $ ) {
 		 * Updates the DOM with new items that were retrieved during the last check
 		 */
 		refreshContent : function( new_items_markup ) {
+			console.log( "loading new content", new_items_markup );
 			$( tggr.mediaItemContainer ).prepend( new_items_markup );
 			$( '#' + tggr.cssPrefix + 'no-posts-available' ).hide();
 			tggr.existingItemIDs = tggr.getExistingItemIDs();
+
+			if ( typeof twttr !== 'undefined' ) {
+				twttr.widgets.load( $( tggr.mediaItemContainer ).get(0) );
+			}
+
+			$( tggr.mediaItemContainer ).trigger( 'tggr-rendered' );
+		},
+
+		afterRender: function(){
+			console.log( "After Render." );
+			if ( tggr.msnry ) {
+				tggr.msnry.destroy();
+			}
+			tggr.msnry = new Masonry( tggr.mediaItemContainer, {
+				itemSelector: tggr.mediaItem
+			});
 		}
 	}; // end tggr
 
 	$( document ).ready( tggr.init );
+
+	// Initial call to afterRender, in case there are no new things to trigger the callback event.
+	$( window ).load( tggr.afterRender );
 
 } // end tggr_wrapper()
 
