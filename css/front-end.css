@@ -2,10 +2,21 @@
  * @package Tagregator
  */
 
-.one-column #content,
+/* Themes need some modification to be properly "full width" */
+/* 2010, FW template */
+body.tggr-page .one-column #content {
+	width: 100%;
+}
+/* 2013 w/ no sidebar, 2014 FW template */
+body.tggr-page:not(.sidebar) .entry-header,
+body.tggr-page:not(.sidebar) .entry-content {
+	max-width: 1024px;
+}
+/* 2012 & WC Base FW templates are OK */
+
 #tggr-media-item-container {
-	margin: 0 !important;
-	width: 100% !important;
+	margin: 0;
+	width: 100%;
 	-ms-word-wrap: break-word;
 	word-wrap: break-word;
 }
@@ -40,7 +51,8 @@
 
 	.tggr-instagram,
 	.tggr-google,
-	.tggr-flickr {
+	.tggr-flickr,
+	.no-js .tggr-tweets {
 		position: relative;
 		line-height: 1;
 
@@ -196,3 +208,18 @@
 			#tggr-media-item-container .tggr-actions a:hover span {
 				text-decoration: underline;
 			}
+
+.no-js {}
+
+	.no-js .tggr-media-item {
+		float: left;
+	}
+
+	.no-js .tggr-media-item:nth-of-type(odd) {
+		clear: left;
+	}
+
+	.no-js .tggr-tweets .tggr-author-profile {
+		margin: 0;
+		display: inline;
+	}

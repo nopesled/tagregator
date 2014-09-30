@@ -25,6 +25,8 @@ function tggrWrapper( $ ) {
 			tggr.mediaItem          = '.' + tggr.cssPrefix + 'media-item';
 			tggr.existingItemIDs    = tggr.getExistingItemIDs();
 
+			$( tggr.mediaItemContainer ).removeClass('no-js');
+
 			// Attach callback to post-render events.
 			$( tggr.mediaItemContainer ).on( 'tggr-rendered', tggr.afterRender );
 			twttr.events.bind( 'loaded', tggr.afterRender );
@@ -71,7 +73,6 @@ function tggrWrapper( $ ) {
 		 * Updates the DOM with new items that were retrieved during the last check
 		 */
 		refreshContent : function( new_items_markup ) {
-			console.log( "loading new content", new_items_markup );
 			$( tggr.mediaItemContainer ).prepend( new_items_markup );
 			$( '#' + tggr.cssPrefix + 'no-posts-available' ).hide();
 			tggr.existingItemIDs = tggr.getExistingItemIDs();
@@ -80,11 +81,14 @@ function tggrWrapper( $ ) {
 				twttr.widgets.load( $( tggr.mediaItemContainer ).get(0) );
 			}
 
+			// Trigger our rendered event.
 			$( tggr.mediaItemContainer ).trigger( 'tggr-rendered' );
 		},
 
+		/**
+		 * Reset Masonry after we render new items.
+		 */
 		afterRender: function(){
-			console.log( "After Render." );
 			if ( tggr.msnry ) {
 				tggr.msnry.destroy();
 			}

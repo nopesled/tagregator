@@ -51,6 +51,8 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			add_action( 'wp_ajax_'.        Tagregator::PREFIX . 'render_latest_media_items', array( $this, 'render_latest_media_items' ) );
 			add_action( 'wp_ajax_nopriv_'. Tagregator::PREFIX . 'render_latest_media_items', array( $this, 'render_latest_media_items' ) );
 
+			add_filter( 'body_class',                                                        array( $this, 'add_class' ) );
+
 			add_shortcode( self::SHORTCODE_NAME,                                             array( $this, 'shortcode_tagregator' ) );
 		}
 
@@ -91,6 +93,20 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			ob_start();
 			require_once( $this->view_folder . '/shortcode-tagregator.php' );
 			return apply_filters( Tagregator::PREFIX . 'shortcode_output', ob_get_clean() );
+		}
+
+		/**
+		 * Add a class to body if this page has the tagregator shortcode.
+		 */
+		public function add_class( $classes ) {
+			global $post;
+
+			if ( is_singular() ) {
+				if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'tagregator' ) ) {
+					$classes[] = 'tggr-page';
+				}
+			}
+			return $classes;
 		}
 
 		/**
