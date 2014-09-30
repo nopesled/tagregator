@@ -13,7 +13,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		protected $refresh_interval, $post_types_to_class_names, $view_folder;		// $refresh_interval is in seconds
 		protected static $readable_properties  = array( 'refresh_interval', 'view_folder' );
 		protected static $writeable_properties = array( 'refresh_interval' );
-		
+
 		const SHORTCODE_NAME = 'tagregator';
 
 		/**
@@ -151,7 +151,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		/**
 		 * Imports the latest items from media sources
 		 * @mvc Controller
-		 * 
+		 *
 		 * @param string $hashtag
 		 * @param string $rate_limit 'respect' to enforce the rate limit, or 'ignore' to ignore it
 		 */
@@ -160,7 +160,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 
 			if ( 'ignore' == $rate_limit || self::refresh_interval_elapsed( $last_fetch, $this->refresh_interval ) ) {
 				set_transient( Tagregator::PREFIX . 'last_media_fetch', microtime( true ) );	// do this right away to minimize the chance of race conditions
-				
+
 				foreach ( Tagregator::get_instance()->media_sources as $source ) {
 					$source->import_new_items( $hashtag );
 				}
@@ -207,10 +207,11 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 				if ( ! in_array( $item->ID, $excluded_item_ids ) ) {
 					$GLOBALS['post'] = $item;
 					setup_postdata( $GLOBALS['post'] );
-					
+
 					$post_type = get_post_type();
 					$class_name = $this->post_types_to_class_names[ $post_type ];
 
+					// Populate variables specific to this media type.
 					extract( $class_name::get_instance()->get_item_view_data( $item->ID ) );
 					require( self::get_view_folder_from_post_type( $post_type ) . '/shortcode-tagregator-media-item.php' );
 				}
@@ -243,20 +244,20 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			header( 'Content-Type: '. $content_type );
 			header( $_SERVER['SERVER_PROTOCOL'] . ' 200 OK' );
 		}
-		
+
 		/**
 		 * Fetches media items for a given hashtag when a post is saved, so that they'll be available immediately when the shortcode is displayed for the first time
 		 * Note that this works, even though it often appears to do nothing. The problem is that Twitter's search API often returns no results,
 		 * even when matching tweets exist. See https://dev.twitter.com/docs/faq#8650 more for details.
-		 * 
+		 *
 		 * @Controller
-		 * 
+		 *
 		 * @param int $post_id
 		 * @param WP_Post $post
 		 */
 		public function prefetch_media_items( $post_id, $post ) {
 			$ignored_actions = array( 'trash', 'untrash', 'restore' );
-			
+
 			if ( 1 !== did_action( 'save_post' ) ) {
 				return;
 			}
@@ -264,22 +265,36 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			if ( isset( $_GET['action'] ) && in_array( $_GET['action'], $ignored_actions ) ) {
 				return;
 			}
-			
+
 			if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! $post || $post->post_status == 'auto-draft' ) {
 				return;
 			}
-			
+
 			preg_match_all( '/' . get_shortcode_regex() . '/s', $post->post_content, $shortcodes, PREG_SET_ORDER );
-			
+
 			foreach ( $shortcodes as $shortcode ) {
 				if ( self::SHORTCODE_NAME == $shortcode[2] ) {
 					$attributes = shortcode_parse_atts( $shortcode[3] );
-					
+
 					if ( isset( $attributes['hashtag'] ) ) {
 						$this->import_new_items( $attributes['hashtag'], 'ignore' );
 					}
 				}
 			}
+		}
+
+		/**
+		 * Used to add classes to each item
+		 *
+		 * @param string $extra_classes  Extra classes to add to item.
+		 */
+		public static function item_class( $extra_classes = '' ){
+			$classes = array(
+				esc_attr( get_post_type() ),
+				esc_attr( Tagregator::CSS_PREFIX . 'media-item' ),
+				esc_attr( $extra_classes ),
+			);
+			printf( ' class="%s"', implode( ' ', $classes ) );
 		}
 	} // end TGGRShortcodeTagregator
 }
