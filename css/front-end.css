@@ -131,7 +131,7 @@ body.tggr-page:not(.sidebar) .entry-content {
 			position: absolute;
 			bottom: 15px;
 			left: 15px;
-			font-size: 14px;
+			font-size: 90%;
 			color: rgba( 0, 0, 0, 0.3 );
 			text-decoration: none;
 		}
