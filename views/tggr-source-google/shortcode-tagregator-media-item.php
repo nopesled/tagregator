@@ -10,7 +10,12 @@
 	</a>
 
 	<div class="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>item-content">
-		<?php the_content(); ?>
+		<?php // If this is a short post, we should display the_content to get benefit of HTML.
+		if ( strlen( strip_tags( $post->post_content ) ) > 300 ) {
+			the_excerpt();
+		} else {
+			the_content();
+		} ?>
 
 		<?php if ( $media ) : ?>
 			<?php foreach ( $media as $media_item ) : ?>

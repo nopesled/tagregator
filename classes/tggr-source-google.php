@@ -61,6 +61,7 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 			add_action( 'admin_init',                                 array( $this, 'register_settings' ) );
 
 			add_filter( Tagregator::PREFIX . 'default_settings',      __CLASS__ . '::register_default_settings' );
+			add_filter( 'post_type_link',                             array( $this, 'post_link' ), 10, 2 );
 		}
 
 		/**
@@ -68,15 +69,15 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 		 * @mvc Controller
 		 */
 		public function init() {
-			self::register_post_type( 
-				self::POST_TYPE_SLUG, 
-				$this->get_post_type_params( 
-					self::POST_TYPE_SLUG, 
-					self::POST_TYPE_NAME_SINGULAR, 
-					self::POST_TYPE_NAME_PLURAL 
-				) 
+			self::register_post_type(
+				self::POST_TYPE_SLUG,
+				$this->get_post_type_params(
+					self::POST_TYPE_SLUG,
+					self::POST_TYPE_NAME_SINGULAR,
+					self::POST_TYPE_NAME_PLURAL
+				)
 			);
-			self::create_post_author();   
+			self::create_post_author();
 			self::get_post_author_user_id();
 		}
 
@@ -89,7 +90,7 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 		public function upgrade( $db_version = 0 ) {}
 
 		/**
-		 * Validates submitted setting values before they get saved to the database. 
+		 * Validates submitted setting values before they get saved to the database.
 		 * Invalid data will be overwritten with defaults.
 		 * @mvc Model
 		 *
@@ -179,7 +180,7 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 				foreach ( $items as $item ) {
 					$post_timestamp_gmt   = strtotime( $item->published );
 					$post_timestamp_local = self::convert_gmt_timestamp_to_local( $post_timestamp_gmt );
-					
+
 					$post = array(
 						'post_author'   => TGGRMediaSource::$post_author_id,
 						'post_content'  => wp_kses( $item->object->content, wp_kses_allowed_html( 'data' ), array( 'http', 'https', 'mailto' ) ),
@@ -225,7 +226,7 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 		 */
 		protected static function update_newest_activity_date( $hashtag ) {
 			$latest_post = self::get_latest_hashtagged_post( self::POST_TYPE_SLUG, $hashtag );
-			
+
 			if ( isset( $latest_post->ID ) ) {
 				$settings = TGGRSettings::get_instance()->settings;
 				$settings[ __CLASS__ ]['_newest_activity_date'] = strtotime( $latest_post->post_date_gmt . ' GMT' );
@@ -253,6 +254,25 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 			);
 
 			return $necessary_data;
+		}
+
+		/**
+		 * Override get_post_permalink to return a link to the status update directly.
+		 *
+		 * @param  string  $permalink The post's permalink.
+		 * @param  WP_Post $post      The post in question.
+		 * @return string             Link to the post on google+ if applicable, otherwise the WP link.
+		 */
+		public function post_link( $permalink, $post ) {
+			if ( $post->post_type == self::POST_TYPE_SLUG ){
+				$data = self::get_item_view_data( $post->ID );
+
+				if ( $data['post_permalink'] ) {
+					return $data['post_permalink'];
+				}
+			}
+
+			return $url;
 		}
 	} // end TGGRSourceGoogle
 }
