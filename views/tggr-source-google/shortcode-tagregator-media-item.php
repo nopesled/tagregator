@@ -1,6 +1,6 @@
 <?php $post = get_post(); ?>
 
-<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX . get_the_ID() ); ?>" <?php self::item_class( Tagregator::CSS_PREFIX.'msnry-2' ); ?>>
+<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX . get_the_ID() ); ?>" <?php self::item_class( Tagregator::CSS_PREFIX.'msnry-1' ); ?>>
 
 	<a href="<?php echo esc_attr( $author_url ); ?>" class="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>author-profile">
 		<?php if ( $author_image_url ) : ?>
@@ -11,7 +11,7 @@
 
 	<div class="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>item-content">
 		<?php the_content(); ?>
-		
+
 		<?php if ( $media ) : ?>
 			<?php foreach ( $media as $media_item ) : ?>
 				<?php if ( 'image' == $media_item['type'] ) : ?>

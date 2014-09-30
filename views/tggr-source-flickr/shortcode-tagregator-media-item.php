@@ -1,6 +1,6 @@
 <?php
 	$post = get_post();
-	$class = ('landscape' == $orientation) ? Tagregator::CSS_PREFIX.'msnry-4': Tagregator::CSS_PREFIX.'msnry-2';
+	$class = ('landscape' == $orientation) ? Tagregator::CSS_PREFIX.'msnry-2': Tagregator::CSS_PREFIX.'msnry-1';
 ?>
 
 <div id="<?php echo esc_attr( Tagregator::CSS_PREFIX . get_the_ID() ); ?>" <?php self::item_class( $class ); ?>>

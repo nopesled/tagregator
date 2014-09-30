@@ -10,12 +10,13 @@
 	word-wrap: break-word;
 }
 
-	.tggr-msnry-2 {
+	/* Masonry Layout classes */
+	.tggr-msnry-1 {
 		margin-left: 1%;
 		margin-right: 1%;
 		width: 48%;
 	}
-	.tggr-msnry-4 {
+	.tggr-msnry-2 {
 		margin-left: 1%;
 		margin-right: 1%;
 		width: 98%;

@@ -1,6 +1,6 @@
 <?php $post = get_post(); ?>
 
-<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX . get_the_ID() ); ?>" <?php self::item_class( Tagregator::CSS_PREFIX.'msnry-2' ); ?>>
+<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX . get_the_ID() ); ?>" <?php self::item_class( Tagregator::CSS_PREFIX.'msnry-1' ); ?>>
 	<blockquote class="twitter-tweet" lang="en">
 		<?php the_content(); ?>
 

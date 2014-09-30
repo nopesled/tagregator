@@ -1,6 +1,6 @@
 <?php $post = get_post(); ?>
 
-<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX . get_the_ID() ); ?>" <?php self::item_class( Tagregator::CSS_PREFIX.'msnry-2' ); ?>>
+<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX . get_the_ID() ); ?>" <?php self::item_class( Tagregator::CSS_PREFIX.'msnry-1' ); ?>>
 
 	<a href="http://instagram.com/<?php echo esc_attr( $author_username ); ?>" class="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>author-profile">
 		<?php if ( $author_image_url ) : ?>
