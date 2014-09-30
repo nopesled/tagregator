@@ -175,7 +175,14 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 				foreach ( $items as $item ) {
 					$post_timestamp_gmt   = absint( $item->dateupload );
 					$post_timestamp_local = self::convert_gmt_timestamp_to_local( $post_timestamp_gmt );
-					
+					$orientation = 'portrait';
+					if ( isset( $item->url_l ) && $item->url_l ) {
+						list( $width, $height ) = getimagesize( esc_url_raw( $item->url_l ) );
+						if ( ( $width / $height ) > 1 ) {
+							$orientation = 'landscape';
+						}
+					}
+
 					$post = array(
 						'post_author'   => TGGRMediaSource::$post_author_id,
 						'post_content'  => wp_kses( $item->description->_content, wp_kses_allowed_html( 'data' ), array( 'http', 'https', 'mailto' ) ),
@@ -195,9 +202,10 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 						'icon_server'      => absint( $item->iconserver ),
 						'media'            => array(
 							array(
-								'small_url' => isset( $item->url_n ) ? esc_url_raw( $item->url_n ) : false,
-								'large_url' => isset( $item->url_l ) ? esc_url_raw( $item->url_l ) : false,
-								'type'      => 'image',
+								'small_url'   => isset( $item->url_n ) ? esc_url_raw( $item->url_n ) : false,
+								'large_url'   => isset( $item->url_l ) ? esc_url_raw( $item->url_l ) : false,
+								'type'        => 'image',
+								'orientation' => $orientation,
 							),
 						),
 					);
@@ -238,16 +246,22 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 		 */
 		public function get_item_view_data( $post_id ) {
 			$postmeta = get_post_custom( $post_id );
+			if ( isset( $postmeta['media'][0] ) ) {
+				$media = maybe_unserialize( $postmeta['media'][0] );
+				$media_item = current( $media );
+			}
+
 			$necessary_data = array(
 				'media_permalink'    => sprintf( 'http://www.flickr.com/photos/%s/%s', $postmeta['author_id'][0], $postmeta['source_id'][0] ),
 				'author_username'    => $postmeta['author_username'][0],
 				'author_profile_url' => sprintf( 'http://www.flickr.com/people/%s', $postmeta['author_id'][0] ),
 				'author_image_url'   => $postmeta['icon_server'][0] > 0 ? sprintf( 'http://farm%d.staticflickr.com/%d/buddyicons/%s.jpg', $postmeta['icon_farm'][0], $postmeta['icon_server'][0], $postmeta['author_id'][0] ) : 'http://www.flickr.com/images/buddyicon.gif',
-				'media'              => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
+				'media'              => isset( $media ) ? $media : array(),
+				'orientation'        => isset( $media_item ) && isset( $media_item['orientation'] ) ? $media_item['orientation'] : 'portrait',
 				'logo_url'           => plugins_url( 'images/source-logos/flickr.png', __DIR__ ),
 			);
 
 			return $necessary_data;
 		}
 	} // end TGGRSourceFlickr
-}	
+}
