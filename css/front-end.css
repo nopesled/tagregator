@@ -74,14 +74,18 @@ body.tggr-page:not(.sidebar) .entry-content {
 			display: inline-block;
 		}
 
+			.tggr-author-profile:hover {
+				text-decoration: none !important; /* Hover effect only on name/username, not entire a. */
+			}
+
 			.tggr-author-profile img {
-				width: 50px;
-				height: 50px;
+				width: 50px !important; /* Overrides width: auto in WC Base */
+				height: 50px !important; /* Overrides height: auto in WC Base */
 			}
 
 			.tggr-author-avatar {
 				float: left;
-				margin-right: 10px;
+				margin-right: 10px !important; /* Overrides margin: 0 in WC Base */
 				border-radius: 3px;
 			}
 
@@ -117,14 +121,14 @@ body.tggr-page:not(.sidebar) .entry-content {
 			font-size: 11px;
 			color: rgba( 0, 0, 0, 0.3 );
 			text-decoration: none;
-			height: 20px;
+			height: 20px !important; /* Overrides height: auto in WC Base */
 		}
 
 			.entry-content .tggr-media-item.tggr-instagram img.tggr-source-logo {
 				top: 30px;
 			}
 			.entry-content .tggr-media-item.tggr-google img.tggr-source-logo {
-				height: 35px;
+				height: 35px !important; /* Overrides height: auto in WC Base */
 			}
 
 		.tggr-timestamp {
@@ -163,6 +167,7 @@ body.tggr-page:not(.sidebar) .entry-content {
 			}
 
 			.tggr-item-content img {
+				margin-bottom: 10px;
 				max-width: 100%;
 			}
 
@@ -208,6 +213,24 @@ body.tggr-page:not(.sidebar) .entry-content {
 			#tggr-media-item-container .tggr-actions a:hover span {
 				text-decoration: underline;
 			}
+
+/* Override default styles */
+.tggr-page .entry-content img {
+	border-radius: 0;
+	box-shadow: none;
+	max-width: 100% !important; /* to override the max-width in the wordcamp base */
+}
+
+.tggr-page .entry-content a {
+	text-decoration: none;
+}
+.tggr-page .entry-content a:hover,
+.tggr-page .entry-content a:active,
+.tggr-page .entry-content a:focus {
+	text-decoration: underline;
+}
+
+/*.tggr-page */
 
 .no-js {}
 
