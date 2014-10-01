@@ -54,6 +54,7 @@ body.tggr-page:not(.sidebar) .entry-content {
 			border: 1px solid #eee !important;
 			border-radius: 3px !important;
 			box-shadow: none !important;
+			background-color: white;
 		}
 
 	.tggr-instagram,
