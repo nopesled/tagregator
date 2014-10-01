@@ -41,7 +41,16 @@ function tggrWrapper( $ ) {
 			$( 'body' ).on( 'click', tggr.loadMoreID, tggr.retrieveOldItems );
 
 			tggr.retrieveNewItems();
-			setInterval( tggr.retrieveNewItems, tggrData.refreshInterval * 1000 );	// convert to milliseconds
+			tggr.refresh = setInterval( tggr.retrieveNewItems, tggrData.refreshInterval * 1000 );	// convert to milliseconds
+
+			$( tggr.mediaItemContainer ).waypoint(function( direction ) {
+				if ( 'down' == direction ){
+					clearInterval( tggr.refresh );
+				} else {
+					tggr.retrieveNewItems();
+					tggr.refresh = setInterval( tggr.retrieveNewItems, tggrData.refreshInterval * 1000 );
+				}
+			}, { offset: -50 });
 		},
 
 		/**
@@ -63,6 +72,11 @@ function tggrWrapper( $ ) {
 		 * Makes an AJAX call to the server to get any new items that have been imported since the last check
 		 */
 		retrieveNewItems : function() {
+			if ( $( 'body' ).hasClass('loading') ){
+				return;
+			}
+			$( 'body' ).addClass('loading');
+
 			$.post(
 				tggrData.ajaxPostURL, {
 					'action'          : tggr.prefix + 'render_latest_media_items',
@@ -71,6 +85,8 @@ function tggrWrapper( $ ) {
 				},
 
 				function( response ) {
+					$( 'body' ).removeClass('loading');
+
 					if ( '-1' != response && '0' != response ) {  // WordPress successfully processed request and found new items
 						tggr.refreshContent( $.parseJSON( response ) );
 					}
@@ -112,10 +128,10 @@ function tggrWrapper( $ ) {
 		 */
 		refreshContent : function( new_items_markup, method ) {
 			method = method || 'prepend';
-			var $newItems, count;
+			var $newItems;
 
 			if ( method === 'prepend' ) {
-					$newItems = $( new_items_markup ).prependTo( tggr.mediaItemContainer );
+				$newItems = $( new_items_markup ).prependTo( tggr.mediaItemContainer );
 			} else {
 				$newItems = $( new_items_markup ).appendTo( tggr.mediaItemContainer );
 			}
@@ -124,9 +140,7 @@ function tggrWrapper( $ ) {
 			tggr.existingItemIDs = tggr.getExistingItemIDs();
 
 			// Trigger our rendered event.
-			if ( $newItems ) {
-				$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: method } );
-			}
+			$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: method } );
 		},
 
 		/**
