@@ -4,6 +4,8 @@
 	<?php endif; ?>
 </div> <!-- end media-item-container -->
 
+<h3 id="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>media-load-more"><a href="#">Load More</a></h3>
+
 <?php if ( ! $items ) : ?>
 
 	<p id="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>no-posts-available">

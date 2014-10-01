@@ -24,14 +24,21 @@ function tggrWrapper( $ ) {
 			tggr.mediaItemContainer = '#' + tggr.cssPrefix + 'media-item-container';
 			tggr.mediaItem          = '.' + tggr.cssPrefix + 'media-item';
 			tggr.existingItemIDs    = tggr.getExistingItemIDs();
+			tggr.loadMoreID         = '#' + tggr.cssPrefix + 'media-load-more';
+			tggr.page               = 1;
 
 			$( tggr.mediaItemContainer ).removeClass('no-js');
 
-			// Attach callback to post-render events, only if we're multiple-columns.
+			// Attach masonry callback to post-render events, only if we're multiple-columns.
 			if ( ! $( tggr.mediaItemContainer ).hasClass('one-column') ) {
 				$( tggr.mediaItemContainer ).on( 'tggr-rendered', tggr.afterRender );
 				twttr.events.bind( 'loaded', tggr.afterRender );
 			}
+
+			// Render Tweets
+			$( tggr.mediaItemContainer ).on( 'tggr-rendered', tggr.renderTwitter );
+
+			$( tggr.loadMoreID ).on( 'click', tggr.loadMore );
 
 			tggr.retrieveNewItems();
 			setInterval( tggr.retrieveNewItems, tggrData.refreshInterval * 1000 );	// convert to milliseconds
@@ -72,42 +79,94 @@ function tggrWrapper( $ ) {
 		},
 
 		/**
+		 * Makes an AJAX call to the server to get any new items that have been imported since the last check
+		 */
+		loadMore : function( event ) {
+			event.preventDefault();
+			if ( tggr.loading ){
+				return;
+			}
+			tggr.loading = true;
+			$( 'body' ).addClass('loading');
+
+			$.post(
+				tggrData.ajaxPostURL, {
+					'action'  : tggr.prefix + 'render_load_more',
+					'hashtag' : tggrData.hashtag,
+					'page'    : tggr.page + 1
+				},
+
+				function( response ) {
+					$( 'body' ).removeClass('loading');
+					if ( '-1' != response && '0' != response ) {  // WordPress successfully processed request and found items
+						var $newItems = $( $.parseJSON( response ) ).appendTo( tggr.mediaItemContainer );
+						// Trigger our rendered event.
+						$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: 'append' } );
+						tggr.page++;
+						tggr.loading = false;
+					}
+				}
+			);
+		},
+
+		/**
 		 * Updates the DOM with new items that were retrieved during the last check
 		 */
 		refreshContent : function( new_items_markup ) {
-			$( tggr.mediaItemContainer ).prepend( new_items_markup );
+			var $newItems = $( new_items_markup ).prependTo( tggr.mediaItemContainer );
 			$( '#' + tggr.cssPrefix + 'no-posts-available' ).hide();
 			tggr.existingItemIDs = tggr.getExistingItemIDs();
 
+			// Trigger our rendered event.
+			$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: 'prepend' } );
+		},
+
+		/**
+		 * Render twitter embeds as they load in.
+		 */
+		renderTwitter: function(){
 			if ( typeof twttr !== 'undefined' ) {
 				twttr.widgets.load( $( tggr.mediaItemContainer ).get(0) );
 			}
-
-			// Trigger our rendered event.
-			$( tggr.mediaItemContainer ).trigger( 'tggr-rendered' );
 		},
 
 		/**
 		 * Reset Masonry after we render new items.
 		 */
-		afterRender: function(){
+		afterRender: function( event, data ){
 			if ( $( tggr.mediaItemContainer ).hasClass('one-column') ) {
 				// Bail if 1-column.
 				return;
 			}
-			if ( tggr.msnry ) {
-				tggr.msnry.destroy();
+			if ( ! tggr.msnry ) {
+				tggr.msnry = new Masonry( tggr.mediaItemContainer, {
+					itemSelector: tggr.mediaItem
+				});
 			}
-			tggr.msnry = new Masonry( tggr.mediaItemContainer, {
-				itemSelector: tggr.mediaItem
-			});
+
+			if ( event.type !== 'tggr-rendered' ) {
+				if ( tggr.msnry ) {
+					tggr.msnry.layout();
+				}
+				return;
+			}
+
+			if ( 'new' == data.method ){
+				// Nothing?
+			} else if ( 'append' == data.method ) {
+				tggr.msnry.appended( data.items.get() );
+			} else {
+				tggr.msnry.prepended( data.items.get() )
+			}
 		}
 	}; // end tggr
 
 	$( document ).ready( tggr.init );
 
-	// Initial call to afterRender, in case there are no new things to trigger the callback event.
-	$( window ).load( tggr.afterRender );
+	// Initial call in case there are no new things to trigger the callback event.
+	$( window ).load( function(){
+		$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $(tggr.mediaItem), method: 'new' } );
+	});
 
 } // end tggr_wrapper()
 

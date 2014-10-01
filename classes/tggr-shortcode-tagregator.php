@@ -51,6 +51,9 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			add_action( 'wp_ajax_'.        Tagregator::PREFIX . 'render_latest_media_items', array( $this, 'render_latest_media_items' ) );
 			add_action( 'wp_ajax_nopriv_'. Tagregator::PREFIX . 'render_latest_media_items', array( $this, 'render_latest_media_items' ) );
 
+			add_action( 'wp_ajax_'.        Tagregator::PREFIX . 'render_load_more',          array( $this, 'render_load_more' ) );
+			add_action( 'wp_ajax_nopriv_'. Tagregator::PREFIX . 'render_load_more',          array( $this, 'render_load_more' ) );
+
 			add_filter( 'body_class',                                                        array( $this, 'add_class' ) );
 
 			add_shortcode( self::SHORTCODE_NAME,                                             array( $this, 'shortcode_tagregator' ) );
@@ -123,7 +126,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		 * @param string $hashtag
 		 * @return array
 		 */
-		protected function get_media_items( $hashtag ) {
+		protected function get_media_items( $hashtag, $page = 1 ) {
 			$items = $post_types = array();
 
 			foreach ( Tagregator::get_instance()->media_sources as $source ) {
@@ -135,6 +138,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 				$items = get_posts( array(
 					'posts_per_page'   => apply_filters( Tagregator::PREFIX . 'media_items_per_page', 30 ),
 					'post_type'        => $post_types,
+					'paged'            => $page,
 					'tax_query'        => array(
 						array(
 							'taxonomy' => TGGRMediaSource::TAXONOMY_HASHTAG_SLUG,
@@ -146,6 +150,27 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			}
 
 			return $items;
+		}
+
+		/**
+		 * Returns HTML markup for past media items
+		 * This is an AJAX handler
+		 * @mvc Controller
+		 */
+		public function render_load_more() {
+			$hashtag = sanitize_text_field( $_REQUEST['hashtag'] );
+			$page = absint( $_REQUEST['page'] );
+
+			$this->send_ajax_headers( 'text/html' );
+
+			if ( empty( $hashtag ) || $page < 1 ) {
+				wp_die( -1 );
+			}
+
+			$items = $this->get_media_items( $hashtag, $page );
+			$items_markup = $this->get_new_items_markup( $items, array() );
+
+			wp_die( json_encode( $items_markup ? $items_markup : 0 ) );
 		}
 
 		/**

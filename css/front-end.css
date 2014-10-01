@@ -222,6 +222,20 @@ body.tggr-page:not(.sidebar) .entry-content {
 				text-decoration: underline;
 			}
 
+#tggr-media-load-more {
+	margin: 10px 0;
+	text-align: center;
+}
+
+.loading #tggr-media-load-more {
+	opacity: 0.5;
+}
+
+.loading #tggr-media-load-more,
+.loading #tggr-media-load-more a {
+	cursor: not-allowed;
+}
+
 /* Override default styles */
 .tggr-page .entry-content img {
 	border-radius: 0;
@@ -253,4 +267,8 @@ body.tggr-page:not(.sidebar) .entry-content {
 	.no-js .tggr-tweets .tggr-author-profile {
 		margin: 0;
 		display: inline;
+	}
+
+	.no-js + #tggr-media-load-more {
+		display: none;
 	}
