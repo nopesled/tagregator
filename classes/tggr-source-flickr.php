@@ -178,7 +178,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 					$orientation = 'portrait';
 					if ( isset( $item->url_l ) && $item->url_l ) {
 						list( $width, $height ) = getimagesize( esc_url_raw( $item->url_l ) );
-						if ( $width && $height && ( $width / $height ) > 1 ) {
+						if ( $width && $height && ( $width / $height ) > 1.25 ) {
 							$orientation = 'landscape';
 						}
 					}
