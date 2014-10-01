@@ -59,7 +59,7 @@ body.tggr-page:not(.sidebar) .entry-content {
 	.tggr-instagram,
 	.tggr-google,
 	.tggr-flickr,
-	.no-js .tggr-tweets {
+	.tggr-tweets blockquote {
 		position: relative;
 		line-height: 1;
 
@@ -89,6 +89,11 @@ body.tggr-page:not(.sidebar) .entry-content {
 			.tggr-author-profile img {
 				width: 50px !important; /* Overrides width: auto in WC Base */
 				height: 50px !important; /* Overrides height: auto in WC Base */
+			}
+
+			.tggr-tweets .tggr-author-profile {
+				margin: 0;
+				display: inline;
 			}
 
 			.tggr-author-avatar {
@@ -262,11 +267,6 @@ body.tggr-page:not(.sidebar) .entry-content {
 
 	.no-js .tggr-media-item:nth-of-type(odd) {
 		clear: left;
-	}
-
-	.no-js .tggr-tweets .tggr-author-profile {
-		margin: 0;
-		display: inline;
 	}
 
 	.no-js + #tggr-media-load-more {
