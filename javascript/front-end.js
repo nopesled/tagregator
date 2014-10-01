@@ -98,12 +98,13 @@ function tggrWrapper( $ ) {
 
 				function( response ) {
 					$( 'body' ).removeClass('loading');
+					tggr.loading = false;
+
 					if ( '-1' != response && '0' != response ) {  // WordPress successfully processed request and found items
 						var $newItems = $( $.parseJSON( response ) ).appendTo( tggr.mediaItemContainer );
 						// Trigger our rendered event.
 						$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: 'append' } );
 						tggr.page++;
-						tggr.loading = false;
 					}
 				}
 			);
