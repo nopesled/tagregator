@@ -273,3 +273,14 @@ body.tggr-page:not(.sidebar) .entry-content {
 	.no-js + #tggr-media-load-more {
 		display: none;
 	}
+
+/* Media Queries */
+
+@media screen and (max-width: 500px) {
+	.tggr-msnry-1,
+	.tggr-msnry-2 {
+		margin-left: 0;
+		margin-right: 0;
+		width: 100%;
+	}
+}
