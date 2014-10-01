@@ -154,6 +154,14 @@ if ( ! class_exists( 'Tagregator' ) ) {
 			);
 
 			wp_register_script(
+				self::PREFIX . 'waypoints',
+				plugins_url( 'javascript/waypoints.min.js', dirname( __FILE__ ) ),
+				array(),
+				self::VERSION,
+				true
+			);
+
+			wp_register_script(
 				'twitter',
 				'//platform.twitter.com/widgets.js',
 				array(),
@@ -164,7 +172,7 @@ if ( ! class_exists( 'Tagregator' ) ) {
 			wp_register_script(
 				self::PREFIX . 'front-end',
 				plugins_url( 'javascript/front-end.js', dirname( __FILE__ ) ),
-				array( 'jquery', self::PREFIX . 'masonry', 'twitter' ),
+				array( 'jquery', self::PREFIX . 'masonry', self::PREFIX . 'waypoints', 'twitter' ),
 				self::VERSION,
 				true
 			);
