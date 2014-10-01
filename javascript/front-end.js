@@ -38,7 +38,7 @@ function tggrWrapper( $ ) {
 			// Render Tweets
 			$( tggr.mediaItemContainer ).on( 'tggr-rendered', tggr.renderTwitter );
 
-			$( tggr.loadMoreID ).on( 'click', tggr.loadMore );
+			$( 'body' ).on( 'click', tggr.loadMoreID, tggr.retrieveOldItems );
 
 			tggr.retrieveNewItems();
 			setInterval( tggr.retrieveNewItems, tggrData.refreshInterval * 1000 );	// convert to milliseconds
@@ -79,14 +79,14 @@ function tggrWrapper( $ ) {
 		},
 
 		/**
-		 * Makes an AJAX call to the server to get any new items that have been imported since the last check
+		 * Makes an AJAX call to the server to get the next page of items.
 		 */
-		loadMore : function( event ) {
+		retrieveOldItems : function( event ) {
 			event.preventDefault();
-			if ( tggr.loading ){
+			// Are we already processing an AJAX request?
+			if ( $( 'body' ).hasClass('loading') ){
 				return;
 			}
-			tggr.loading = true;
 			$( 'body' ).addClass('loading');
 
 			$.post(
@@ -98,12 +98,9 @@ function tggrWrapper( $ ) {
 
 				function( response ) {
 					$( 'body' ).removeClass('loading');
-					tggr.loading = false;
 
 					if ( '-1' != response && '0' != response ) {  // WordPress successfully processed request and found items
-						var $newItems = $( $.parseJSON( response ) ).appendTo( tggr.mediaItemContainer );
-						// Trigger our rendered event.
-						$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: 'append' } );
+						tggr.refreshContent( $.parseJSON( response ), 'append' );
 						tggr.page++;
 					}
 				}
@@ -113,13 +110,23 @@ function tggrWrapper( $ ) {
 		/**
 		 * Updates the DOM with new items that were retrieved during the last check
 		 */
-		refreshContent : function( new_items_markup ) {
-			var $newItems = $( new_items_markup ).prependTo( tggr.mediaItemContainer );
+		refreshContent : function( new_items_markup, method ) {
+			method = method || 'prepend';
+			var $newItems, count;
+
+			if ( method === 'prepend' ) {
+					$newItems = $( new_items_markup ).prependTo( tggr.mediaItemContainer );
+			} else {
+				$newItems = $( new_items_markup ).appendTo( tggr.mediaItemContainer );
+			}
+
 			$( '#' + tggr.cssPrefix + 'no-posts-available' ).hide();
 			tggr.existingItemIDs = tggr.getExistingItemIDs();
 
 			// Trigger our rendered event.
-			$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: 'prepend' } );
+			if ( $newItems ) {
+				$( tggr.mediaItemContainer ).trigger( 'tggr-rendered', { items: $newItems, method: method } );
+			}
 		},
 
 		/**
