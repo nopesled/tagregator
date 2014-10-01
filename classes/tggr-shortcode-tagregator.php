@@ -109,14 +109,22 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		 * Add a class to body if this page has the tagregator shortcode.
 		 */
 		public function add_class( $classes ) {
-			global $post;
 
-			if ( is_singular() ) {
-				if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'tagregator' ) ) {
-					$classes[] = 'tggr-page';
-				}
+			if ( self::is_tggr_page() ) {
+				$classes[] = Tagregator::CSS_PREFIX . 'page';
 			}
 			return $classes;
+		}
+
+		/**
+		 */
+		protected function is_tggr_page(  ){
+			global $post;
+
+			if ( is_singular() && is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'tagregator' ) ) {
+				return true;
+			}
+			return false;
 		}
 
 		/**
