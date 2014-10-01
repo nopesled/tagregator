@@ -33,7 +33,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 				$this->default_settings[ strtolower( str_replace( ' ', '_', $key ) ) ] = '';
 			}
 			$this->default_settings[ '_newest_media_date' ] = 0;
-			
+
 			$this->register_hook_callbacks();
 		}
 
@@ -97,7 +97,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 					case '_newest_media_date':
 						$new_settings[ $setting ] = absint( $value );
 					break;
-				
+
 					default:
 						if ( is_string( $value ) ) {
 							$new_settings[ $setting ] = sanitize_text_field( $value );
@@ -151,7 +151,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 
 				$response = wp_remote_get( $url );
 				$response = json_decode( wp_remote_retrieve_body( $response ) );
-				
+
 				if ( isset( $response->stat ) && 'ok' == $response->stat ) {
 					$media = $response->photos->photo;
 				}
@@ -170,7 +170,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 		 */
 		public function convert_items_to_posts( $items, $term ) {
 			$posts = array();
-			
+
 			if ( $items ) {
 				foreach ( $items as $item ) {
 					$post_timestamp_gmt   = absint( $item->dateupload );
@@ -178,7 +178,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 					$orientation = 'portrait';
 					if ( isset( $item->url_l ) && $item->url_l ) {
 						list( $width, $height ) = getimagesize( esc_url_raw( $item->url_l ) );
-						if ( ( $width / $height ) > 1 ) {
+						if ( $width && $height && ( $width / $height ) > 1 ) {
 							$orientation = 'landscape';
 						}
 					}
@@ -229,7 +229,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 		 */
 		protected static function update_newest_media_date( $hashtag ) {
 			$latest_post = self::get_latest_hashtagged_post( self::POST_TYPE_SLUG, $hashtag );
-			
+
 			if ( isset( $latest_post->ID ) ) {
 				$settings = TGGRSettings::get_instance()->settings;
 				$settings[ __CLASS__ ]['_newest_media_date'] = strtotime( $latest_post->post_date_gmt . ' GMT' );
