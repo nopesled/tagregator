@@ -117,8 +117,11 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		}
 
 		/**
+		 * Check if the current page has the tagregator shortcode.
+		 *
+		 * @return boolean
 		 */
-		protected function is_tggr_page(  ){
+		protected function is_tggr_page(){
 			global $post;
 
 			if ( is_singular() && is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'tagregator' ) ) {
