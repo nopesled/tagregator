@@ -352,6 +352,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 				esc_attr( Tagregator::CSS_PREFIX . 'media-item' ),
 				esc_attr( $extra_classes ),
 			);
+			$classes = apply_filters( 'tagregator_item_class', $classes );
 			printf( ' class="%s"', implode( ' ', $classes ) );
 		}
 	} // end TGGRShortcodeTagregator
