@@ -88,7 +88,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		public function shortcode_tagregator( $attributes ) {
 			$attributes = shortcode_atts( array(
 				'hashtag' => '',
-				'layout'  => 'two-column',
+				'layout'  => 'three-column',
 			), $attributes );
 			$items = array();
 
@@ -96,8 +96,8 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 				$items = self::get_media_items( $attributes['hashtag'] );
 			}
 
-			if ( ! in_array( $attributes['layout'], array( 'one-column', 'two-column' ) ) ) {
-				$attributes['layout'] = 'two-column';
+			if ( ! in_array( $attributes['layout'], array( 'one-column', 'two-column', 'three-column' ) ) ) {
+				$attributes['layout'] = 'three-column';
 			}
 
 			ob_start();
@@ -109,7 +109,6 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		 * Add a class to body if this page has the tagregator shortcode.
 		 */
 		public function add_class( $classes ) {
-
 			if ( self::is_tggr_page() ) {
 				$classes[] = Tagregator::CSS_PREFIX . 'page';
 			}
