@@ -268,6 +268,7 @@ body.tggr-page:not(.sidebar) .entry-content {
 
 	.no-js .tggr-media-item {
 		float: left;
+		width: 48%;
 	}
 
 	.no-js .tggr-media-item:nth-of-type(odd) {
