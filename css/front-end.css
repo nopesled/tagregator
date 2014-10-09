@@ -61,6 +61,12 @@ body.tggr-page:not(.sidebar) .entry-content {
 			background-color: white;
 		}
 
+	.tggr-media-item.event-owner {
+		padding: 3px;
+		background-color: #d94e25;
+		border-radius: 3px;
+	}
+
 	.tggr-instagram,
 	.tggr-google,
 	.tggr-flickr,

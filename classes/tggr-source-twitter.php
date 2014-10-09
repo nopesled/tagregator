@@ -66,6 +66,7 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 			add_filter( 'update_option_'. TGGRSettings::SETTING_SLUG, __CLASS__ . '::obtain_bearer_token', 10, 2 );
 			add_filter( 'the_content',                                __CLASS__ . '::convert_urls_to_links' );
 			add_filter( 'the_content',                                __CLASS__ . '::link_hashtags_and_usernames' );
+			add_filter( 'tagregator_item_class',                      array( $this, 'item_class' ) );
 		}
 
 		/**
@@ -178,7 +179,7 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 					'body' => 'grant_type=client_credentials'
 				)
 			);
-			
+
 			$token = json_decode( wp_remote_retrieve_body( $response ) );
 
 			if ( isset( $token->token_type ) && 'bearer' == $token->token_type ) {
@@ -318,7 +319,7 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 		/**
 		 * Convert usernames and hashtags to links
 		 * @mvc Model
-		 * 
+		 *
 		 * @link http://snipplr.com/view.php?codeview&id=28482 Based on
 		 * @link https://gist.github.com/georgestephanis/6567420 Based on
 		 * @param string $text
@@ -331,8 +332,23 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 				$content = preg_replace( "/@(\w+)/", "<a href=\"https://twitter.com/\\1\" class=\"". self::POST_TYPE_SLUG ."-username\">@\\1</a>", $content );
 				$content = preg_replace( "/(?<!&)#(\w+)/", "<a href=\"https://twitter.com/search?q=\\1\" class=\"". self::POST_TYPE_SLUG ."-tag\">#\\1</a>", $content );
 			}
-			
+
 			return $content;
+		}
+
+		/**
+		 * Add a class to the tweet container if it belongs to the verified event account (as set in admin).
+		 */
+		public function item_class( $classes ) {
+			global $post;
+			if ( self::POST_TYPE_SLUG == $post->post_type ){
+				$author = strtolower( get_post_meta( $post->ID, 'author_username', true ) );
+				$event_account = strtolower( TGGRSettings::get_instance()->settings[ __CLASS__ ]['event_account'] );
+				if ( $author && $event_account && $author == $event_account ) {
+					$classes[] = 'event-owner';
+				}
+			}
+			return $classes;
 		}
 
 		/**
@@ -343,7 +359,7 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 		 */
 		protected static function update_newest_tweet_id( $hashtag ) {
 			$latest_post = self::get_latest_hashtagged_post( self::POST_TYPE_SLUG, $hashtag );
-	
+
 			if ( isset( $latest_post->ID ) ) {
 				$source_id = get_post_meta( $latest_post->ID, 'source_id', true );
 
