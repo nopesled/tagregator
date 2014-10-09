@@ -27,14 +27,14 @@ body.tggr-page:not(.sidebar) .entry-content {
 		margin-right: 1%;
 		width: 31%;
 	}
-	.tggr-msnry-2 {
+	.tggr-msnry-full {
 		margin-left: 1%;
 		margin-right: 1%;
 		width: 98%;
 	}
 
 	.one-column .tggr-msnry-1,
-	.one-column .tggr-msnry-2 {
+	.one-column .tggr-msnry-full {
 		margin-left: 0;
 		margin-right: 0;
 		width: 100%;
@@ -280,14 +280,14 @@ body.tggr-page:not(.sidebar) .entry-content {
 	.tggr-msnry-1 {
 		width: 48%;
 	}
-	.tggr-msnry-2 {
+	.tggr-msnry-full {
 		width: 98%;
 	}
 }
 
 @media screen and (max-width: 500px) {
 	.tggr-msnry-1,
-	.tggr-msnry-2 {
+	.tggr-msnry-full {
 		margin-left: 0;
 		margin-right: 0;
 		width: 100%;
