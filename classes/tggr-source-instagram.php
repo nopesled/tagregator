@@ -260,29 +260,5 @@ if ( ! class_exists( 'TGGRSourceInstagram' ) ) {
 				}
 			}
 		}
-
-		/**
-		 * Gathers the data that the media-item view will need
-		 * @mvc Model
-		 *
-		 * @param WP_Post $post
-		 *
-		 * @return array
-		 */
-		public function get_item_view_data( $post ) {
-			$postmeta = get_post_custom( $post->ID );
-			$necessary_data = array(
-				'media_permalink'  => $postmeta['media_permalink'][0],
-				'author_name'      => $postmeta['author_name'][0],
-				'author_username'  => $postmeta['author_username'][0],
-				'author_image_url' => $postmeta['author_image_url'][0],
-				'media'            => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
-				'logo_url'         => plugins_url( 'images/source-logos/instagram.png', __DIR__ ),
-				'css_classes'      => self::get_css_classes( $post->ID, $postmeta['author_username'][0] ),
-				'show_excerpt'     => self::show_excerpt( $post ),
-			);
-
-			return $necessary_data;
-		}
 	} // end TGGRSourceInstagram
 }

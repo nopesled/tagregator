@@ -231,41 +231,5 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 				TGGRSettings::get_instance()->settings = $settings;
 			}
 		}
-
-		/**
-		 * Gathers the data that the media-item view will need
-		 * @mvc Model
-		 *
-		 * @param WP_Post $post_id
-		 *
-		 * @return array
-		 */
-		public function get_item_view_data( $post ) {
-			$postmeta = get_post_custom( $post->ID );
-
-			if ( $postmeta['icon_server'][0] > 0 ) {
-				$author_image_url = sprintf(
-					'https://farm%d.staticflickr.com/%d/buddyicons/%s.jpg',
-					$postmeta['icon_farm'][0],
-					$postmeta['icon_server'][0],
-					$postmeta['author_id'][0]
-				);
-			} else {
-				$author_image_url = 'https://www.flickr.com/images/buddyicon.gif';
-			}
-
-			$necessary_data = array(
-				'media_permalink'    => sprintf( 'https://www.flickr.com/photos/%s/%s', $postmeta['author_id'][0], $postmeta['source_id'][0] ),
-				'author_username'    => $postmeta['author_username'][0],
-				'author_profile_url' => sprintf( 'https://www.flickr.com/people/%s', $postmeta['author_id'][0] ),
-				'author_image_url'   => $author_image_url,
-				'media'              => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
-				'logo_url'           => plugins_url( 'images/source-logos/flickr.png', __DIR__ ),
-				'css_classes'        => self::get_css_classes( $post->ID, $postmeta['author_username'][0] ),
-				'show_excerpt'       => self::show_excerpt( $post ),
-			);
-
-			return $necessary_data;
-		}
 	} // end TGGRSourceFlickr
 }

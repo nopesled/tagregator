@@ -393,15 +393,6 @@ if ( ! class_exists( 'TGGRMediaSource' ) ) {
 		}
 
 		/**
-		 * Gathers the data that the media-item view will need
-		 * @mvc Model
-		 *
-		 * @param WP_Post $post
-		 * @return array
-		 */
-		abstract public function get_item_view_data( $post );
-
-		/**
 		 * Determine the relevant CSS classes for a media item container
 		 * @mvc Model
 		 *
