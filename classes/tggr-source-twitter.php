@@ -67,6 +67,7 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 			add_filter( 'the_content',                                __CLASS__ . '::convert_urls_to_links', 9 );    // before wp_texturize() to avoid malformed links. see https://core.trac.wordpress.org/ticket/17097#comment:1
 			add_filter( 'the_content',                                __CLASS__ . '::link_hashtags_and_usernames' );
 			add_filter( 'excerpt_length',                             __CLASS__ . '::get_excerpt_length' );
+			add_filter( 'json_prepare_post',                          array( $this, 'get_extra_item_data' ), 10, 3 );
 		}
 
 		/**
@@ -358,6 +359,41 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 					TGGRSettings::get_instance()->settings = $settings;
 				}
 			}
+		}
+
+		/**
+		 * Gathers the data that the media-item view will need
+		 * @mvc Model
+		 *
+		 * @param Array  $_post  Fields returned via JSON API.
+		 * @param Array  $post   Unfiltered post data from API request.
+		 * @param string $context The context for the prepared post. (view|view-revision|edit|embed|single-parent)
+		 *
+		 * @return array
+		 */
+		public function get_extra_item_data( $_post, $post, $context ) {
+			if ( self::POST_TYPE_SLUG !== $post['post_type'] ) {
+				return $_post;
+			}
+
+			$postmeta = get_post_custom( $post['ID'] );
+			$author = array(
+				'name'     => $postmeta['author_name'][0],
+				'username' => $postmeta['author_username'][0],
+				'image'    => $postmeta['author_image_url'][0],
+			);
+			$extra_fields = array(
+				'tweetId'         => $postmeta['source_id'][0],
+				'mediaPermalink'  => sprintf( 'https://twitter.com/%s/status/%s', $postmeta['author_username'][0], $postmeta['source_id'][0] ),
+				'tweetAuthor'           => $author,
+				'media'            => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
+				'cssClasses'       => self::get_css_classes( $post['ID'], $postmeta['author_username'][0] ),
+				'showExcerpt'      => self::show_excerpt( $post ),
+			);
+
+			$_post = array_merge( $_post, $extra_fields );
+
+			return $_post;
 		}
 	} // end TGGRSourceTwitter
 }

@@ -335,6 +335,19 @@ if ( ! class_exists( 'TGGRMediaSource' ) ) {
 		 */
 		abstract public function convert_items_to_posts( $items, $term );
 
+
+		/**
+		 * Gathers the data that the media-item view will need
+		 * @mvc Model
+		 *
+		 * @param Array  $_post  Fields returned via JSON API.
+		 * @param Array  $post   Unfiltered post data from API request.
+		 * @param string $context The context for the prepared post. (view|view-revision|edit|embed|single-parent)
+		 *
+		 * @return array
+		 */
+		abstract public function get_extra_item_data( $_post, $post, $context );
+
 		/**
 		 * Creates a title for a post based on the content
 		 * @mvc Model
@@ -468,7 +481,7 @@ if ( ! class_exists( 'TGGRMediaSource' ) ) {
 		 * @return bool
 		 */
 		public static function show_excerpt( $post ) {
-			$content = strip_tags( $post->post_content );
+			$content = strip_tags( $post['post_content'] );
 			$length  = function_exists( 'mb_strlen' ) ? mb_strlen( $content ) : strlen( $content );
 
 			return $length > self::POST_CONTENT_LENGTH_DISPLAY_LIMIT;

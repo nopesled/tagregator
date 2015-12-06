@@ -61,6 +61,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 			add_action( 'init',                     array( $this, 'init' ) );
 			add_action( 'admin_init',               array( $this, 'register_settings' ) );
 			add_filter( 'excerpt_length',           __CLASS__ . '::get_excerpt_length' );
+			add_filter( 'json_prepare_post',        array( $this, 'get_extra_item_data' ), 10, 3 );
 
 			add_filter( Tagregator::PREFIX . 'default_settings', __CLASS__ . '::register_default_settings' );
 		}
@@ -230,6 +231,53 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 				$settings[ __CLASS__ ]['_newest_media_date'] = strtotime( $latest_post->post_date_gmt . ' GMT' );
 				TGGRSettings::get_instance()->settings = $settings;
 			}
+		}
+
+		/**
+		 * Gathers the data that the media-item view will need
+		 * @mvc Model
+		 *
+		 * @param Array  $_post  Fields returned via JSON API.
+		 * @param Array  $post   Unfiltered post data from API request.
+		 * @param string $context The context for the prepared post. (view|view-revision|edit|embed|single-parent)
+		 *
+		 * @return array
+		 */
+		public function get_extra_item_data( $_post, $post, $context ) {
+			if ( self::POST_TYPE_SLUG !== $post['post_type'] ) {
+				return $_post;
+			}
+
+			$postmeta = get_post_custom( $post['ID'] );
+			if ( $postmeta['icon_server'][0] > 0 ) {
+				$author_image_url = sprintf(
+					'https://farm%d.staticflickr.com/%d/buddyicons/%s.jpg',
+					$postmeta['icon_farm'][0],
+					$postmeta['icon_server'][0],
+					$postmeta['author_id'][0]
+				);
+			} else {
+				$author_image_url = 'https://www.flickr.com/images/buddyicon.gif';
+			}
+
+			$author = array(
+				'name'     => '',
+				'username' => $postmeta['author_username'][0],
+				'profile'  => sprintf( 'https://www.flickr.com/people/%s', $postmeta['author_id'][0] ),
+				'image'    => $author_image_url,
+			);
+			$extra_fields = array(
+				'sourceId'         => $postmeta['source_id'][0],
+				'mediaPermalink'   => sprintf( 'https://www.flickr.com/photos/%s/%s', $postmeta['author_id'][0], $postmeta['source_id'][0] ),
+				'author'           => $author,
+				'media'            => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
+				'cssClasses'       => self::get_css_classes( $post['ID'], $postmeta['author_username'][0] ),
+				'showExcerpt'      => self::show_excerpt( $post ),
+			);
+
+			$_post = array_merge( $_post, $extra_fields );
+
+			return $_post;
 		}
 	} // end TGGRSourceFlickr
 }
