@@ -3,9 +3,17 @@
 	Loading new posts...
 </div> <!-- end media-item-container -->
 
+<?php
+$media_cpts = array();
+foreach ( Tagregator::get_instance()->media_sources as $source ) {
+	$media_cpts[] = esc_js( $source::POST_TYPE_SLUG );
+};
+?>
+
 <script type="text/javascript">
 	var tggrData = {
 		ApiUrl:          '<?php echo get_json_url(); ?>',
+		mediaTypes:      <?php echo json_encode( $media_cpts ); ?>,
 		hashtag:         '<?php echo esc_js( $attributes['hashtag'] ); ?>',
 		refreshInterval: <?php echo esc_js( $this->refresh_interval ); ?>
 	};

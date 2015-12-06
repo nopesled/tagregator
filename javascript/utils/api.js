@@ -19,11 +19,9 @@ export default {
 	// args: might have pagination, or a filter (category/tag/etc)
 	getItems: function( args ) {
 		let url = `${tggrData.ApiUrl}/posts/`;
-		console.log( url );
+
 		args = args || {};
-
-		args.type = 'tggr-tweets'; // Can we pass all types through?
-
+		args.type = tggrData.mediaTypes;
 		args.filter = args.filter || {};
 		args.filter.posts_per_page = 100;
 		args.filter.hashtag = 'wcus';
