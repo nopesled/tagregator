@@ -1,16 +1,68 @@
 import React from 'react';
 
+// Internal
+import API from '../../utils/api';
+import MediaStore from '../../stores/media-store';
+
+// Components
+import Tweet from '../tweet';
+
 require( './style.scss' );
 
-export default React.createClass({
+/**
+ * Method to retrieve state from Stores
+ */
+function getState() {
+	return {
+		data: MediaStore.getItems(),
+	};
+}
 
+export default React.createClass({
 	displayName: 'Stream',
 
-	render() {
+	getInitialState: function() {
+		return getState();
+	},
+
+	componentDidMount: function() {
+		MediaStore.addChangeListener( this._onChange );
+		API.getItems();
+	},
+
+	componentDidUpdate: function( prevProps, prevState ) {
+		if ( prevProps !== this.props ) {
+			API.getItems();
+		}
+	},
+
+	componentWillUnmount: function() {
+		MediaStore.removeChangeListener( this._onChange );
+	},
+
+	_onChange: function() {
+		this.setState( getState() );
+	},
+
+	render: function() {
+		let items = this.state.data.map( function( item, i ) {
+			let rendered;
+
+			switch ( item.type ) {
+				case 'tggr-tweets':
+					rendered = ( <Tweet key={ i } item={ item } /> );
+					break;
+				default:
+					rendered = ( <div key={ i }>No handler for this media type</div> );
+					break;
+			}
+
+			return rendered;
+		} );
+
 		return (
-			<div className="react-boilerplate-widget">
-				<h3>Hello, World!</h3>
-				<p>I made this thing.</p>
+			<div className="tggr-stream">
+				{ items }
 			</div>
 		);
 	}
