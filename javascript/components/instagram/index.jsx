@@ -6,14 +6,14 @@ import ContentMixin from '../../utils/content-mixin';
 require( './style.scss' );
 
 export default React.createClass({
-	displayName: 'Tweet',
+	displayName: 'Instagram',
 	mixins: [ ContentMixin ],
 
 	render: function() {
 		return (
 			<div className="tggr-media-item">
 				<div dangerouslySetInnerHTML={ this.getContent( this.props.item ) } />
-				<p>Twitter</p>
+				<p>Instagram</p>
 			</div>
 		);
 	}
