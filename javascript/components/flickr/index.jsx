@@ -42,7 +42,7 @@ export default React.createClass({
 				</div>
 
 				<a href={ item.mediaPermalink } className="tggr-timestamp">
-					{ this.getTimeDiff( item.date ) }
+					{ this.getTimeDiff( item.date_gmt ) }
 				</a>
 
 				<img className="tggr-source-logo" src={ tggrData.logos.flickr } alt="Flickr" />

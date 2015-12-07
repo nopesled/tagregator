@@ -18,6 +18,10 @@ var webpackConfig = {
 				loaders: [ 'babel-loader?cacheDirectory&optional[]=runtime' ]
 			},
 			{
+				test: /\.json$/,
+				loader: require.resolve('json-loader')
+			},
+			{
 				test: /\.scss$/,
 				loader: ExtractTextPlugin.extract( 'style-loader', 'css!sass' )
 			}

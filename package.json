@@ -20,6 +20,8 @@
     "flux": "^2.1.1",
     "keymirror": "^0.1.1",
     "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "moment-timezone": "^0.4.1",
     "object-assign": "^4.0.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
@@ -37,6 +39,7 @@
     "lint": "eslint src"
   },
   "devDependencies": {
+    "json-loader": "^0.5.4",
     "node-sass": "^3.4.2"
   }
 }
