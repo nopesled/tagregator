@@ -20,6 +20,11 @@ var _items = [];
  * @param {array} data - array of items, pulled from API
  */
 function _loadItems( data ) {
+	data.sort( function( a, b ){
+		let aDate = new Date( a.date );
+		let bDate = new Date( b.date );
+		return bDate - aDate;
+	} );
 	_items = data;
 }
 
