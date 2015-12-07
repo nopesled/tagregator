@@ -284,8 +284,8 @@ if ( ! class_exists( 'TGGRSourceInstagram' ) ) {
 				'image'    => $postmeta['author_image_url'][0],
 			);
 			$extra_fields = array(
-				'mediaPermalink'  => $postmeta['media_permalink'][0],
-				'author'           => $author,
+				'mediaPermalink'   => $postmeta['media_permalink'][0],
+				'instAuthor'       => $author,
 				'media'            => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
 				'cssClasses'       => self::get_css_classes( $post['ID'], $postmeta['author_username'][0] ),
 				'showExcerpt'      => self::show_excerpt( $post ),
