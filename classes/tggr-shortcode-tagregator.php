@@ -132,10 +132,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 		 * @return string
 		 */
 		public function import_hashtagged_posts( $hashtag ) {
-			// Only run once every 20 seconds.
-			if ( time() % 20 === 0 ) {
-				$this->import_new_items( $hashtag );
-			}
+			$this->import_new_items( $hashtag );
 			return $hashtag;
 		}
 
