@@ -7,6 +7,7 @@ import MediaStore from '../../stores/media-store';
 // Components
 import Tweet from '../tweet';
 import Instagram from '../instagram';
+import Flickr from '../flickr';
 
 require( './style.scss' );
 
@@ -55,6 +56,9 @@ export default React.createClass({
 					break;
 				case 'tggr-instagram':
 					rendered = ( <Instagram key={ i } item={ item } /> );
+					break;
+				case 'tggr-flickr':
+					rendered = ( <Flickr key={ i } item={ item } /> );
 					break;
 				default:
 					rendered = ( <div key={ i }>No handler for this media type: { item.type }</div> );

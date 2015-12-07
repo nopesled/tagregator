@@ -269,7 +269,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 			$extra_fields = array(
 				'sourceId'         => $postmeta['source_id'][0],
 				'mediaPermalink'   => sprintf( 'https://www.flickr.com/photos/%s/%s', $postmeta['author_id'][0], $postmeta['source_id'][0] ),
-				'author'           => $author,
+				'flickrAuthor'     => $author,
 				'media'            => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
 				'cssClasses'       => self::get_css_classes( $post['ID'], $postmeta['author_username'][0] ),
 				'showExcerpt'      => self::show_excerpt( $post ),
