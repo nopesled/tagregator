@@ -49,6 +49,7 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			add_action( 'init',                                                              array( $this, 'init' ) );
 			add_action( 'save_post',                                                         array( $this, 'prefetch_media_items' ), 10, 2 );
 			add_filter( 'body_class',                                                        array( $this, 'add_body_classes' ) );
+			add_filter( 'json_query_var-hashtag',                                            array( $this, 'import_hashtagged_posts' ) );
 
 			add_shortcode( self::SHORTCODE_NAME,                                             array( $this, 'shortcode_tagregator' ) );
 		}
@@ -123,6 +124,19 @@ if ( ! class_exists( 'TGGRShortcodeTagregator' ) ) {
 			ob_start();
 			require_once( $this->view_folder . '/shortcode-tagregator.php' );
 			return apply_filters( Tagregator::PREFIX . 'shortcode_output', ob_get_clean() );
+		}
+
+		/**
+		 * When a hashtag request is sent, trigger a new import of data.
+		 *
+		 * @return string
+		 */
+		public function import_hashtagged_posts( $hashtag ) {
+			// Only run once every 20 seconds.
+			if ( time() % 20 === 0 ) {
+				$this->import_new_items( $hashtag );
+			}
+			return $hashtag;
 		}
 
 		/**
