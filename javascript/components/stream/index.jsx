@@ -57,7 +57,7 @@ export default React.createClass({
 					rendered = ( <Instagram key={ i } item={ item } /> );
 					break;
 				default:
-					rendered = ( <div key={ i }>No handler for this media type</div> );
+					rendered = ( <div key={ i }>No handler for this media type: { item.type }</div> );
 					break;
 			}
 
