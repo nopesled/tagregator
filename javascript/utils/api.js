@@ -25,6 +25,8 @@ export default {
 		args.filter = args.filter || {};
 		args.filter.posts_per_page = 100;
 		args.filter.hashtag = 'wcus';
+		args.filter.orderby = 'date';
+		args.filter.order = 'DESC';
 
 		jQuery.when(
 			_get( url, args )
