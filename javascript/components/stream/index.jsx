@@ -20,6 +20,8 @@ function getState() {
 	};
 }
 
+var _interval;
+
 export default React.createClass({
 	displayName: 'Stream',
 
@@ -30,6 +32,7 @@ export default React.createClass({
 	componentDidMount: function() {
 		MediaStore.addChangeListener( this._onChange );
 		API.getItems();
+		_interval = setInterval( API.getItems, 30000 );
 	},
 
 	componentDidUpdate: function( prevProps, prevState ) {
@@ -40,6 +43,7 @@ export default React.createClass({
 
 	componentWillUnmount: function() {
 		MediaStore.removeChangeListener( this._onChange );
+		clearInterval( _interval );
 	},
 
 	_onChange: function() {
