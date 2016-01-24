@@ -2,6 +2,7 @@ var path = require( 'path' );
 var webpack = require( 'webpack' );
 var NODE_ENV = process.env.NODE_ENV || 'development';
 var ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+var autoprefixer = require( 'autoprefixer' );
 
 var webpackConfig = {
 	entry: path.join( __dirname, 'javascript', 'index.jsx' ),
@@ -27,9 +28,12 @@ var webpackConfig = {
 			},
 			{
 				test: /\.scss$/,
-				loader: ExtractTextPlugin.extract( 'style-loader', 'css!sass' )
+				loader: ExtractTextPlugin.extract( 'style-loader', 'css!postcss!sass' )
 			}
 		]
+	},
+	postcss: function () {
+		return [ autoprefixer ];
 	},
 	resolve: {
 		extensions: [ '', '.js', '.jsx' ],
