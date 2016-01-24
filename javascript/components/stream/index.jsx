@@ -26,11 +26,12 @@ export default React.createClass({
 	},
 
 	getItems: function() {
+		const intervalSeconds = tggrData.refreshInterval || 10;
 		if ( ! this.state.fetching ) {
 			this.setState( { fetching: true } );
 			API.getItems();
 			if ( 'undefined' === typeof _interval ) {
-				_interval = setInterval( this.getItems, 10000 ); // 10 seconds
+				_interval = setInterval( this.getItems, intervalSeconds * 1000 );
 			}
 		}
 	},
