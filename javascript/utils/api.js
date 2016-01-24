@@ -16,7 +16,6 @@ var _get = function( url, data ) {
 
 export default {
 	// Get a list of tweets according to args criteria
-	// args: might have pagination, or a filter (category/tag/etc)
 	getItems: function( args ) {
 		let url = `${tggrData.ApiUrl}/posts/`;
 
