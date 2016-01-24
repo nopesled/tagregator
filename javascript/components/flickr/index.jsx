@@ -28,7 +28,7 @@ export default React.createClass({
 		} );
 
 		return (
-			<div className="tggr-media-item">
+			<div className={ item.cssClasses }>
 				<a className="tggr-author-profile clearfix" href={ author.profile }>
 					{ author.image && <img src={ author.image } alt="" className="tggr-author-avatar" /> }
 					<span className="tggr-author-username">@{ author.username }</span>
