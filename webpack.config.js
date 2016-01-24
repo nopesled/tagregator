@@ -15,7 +15,11 @@ var webpackConfig = {
 			{
 				test: /\.jsx?$/,
 				exclude: /node_modules/,
-				loaders: [ 'babel-loader?cacheDirectory&optional[]=runtime' ]
+				loader: 'babel-loader',
+				query: {
+					cacheDirectory: true,
+					presets: [ 'es2015', 'react' ]
+				}
 			},
 			{
 				test: /\.json$/,

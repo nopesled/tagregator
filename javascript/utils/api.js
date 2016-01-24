@@ -1,5 +1,5 @@
 /* global jQuery */
-import first from 'lodash/array/first';
+import first from 'lodash/head';
 
 /**
  * Internal dependencies
