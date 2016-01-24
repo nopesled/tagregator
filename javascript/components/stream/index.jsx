@@ -84,14 +84,16 @@ export default React.createClass({
 		} );
 
 		loadingClasses = classNames( {
-			'loading-indicator': true,
+			'tggr-loading': true,
 			'is-loading': this.state.fetching,
 		} );
 
 		return (
 			<div className="tggr-stream">
 				<div className={ loadingClasses }><span className='screen-reader-text'>Loading More</span></div>
-				{ items }
+				<div className="tggr-media-items">
+					{ items }
+				</div>
 			</div>
 		);
 	}

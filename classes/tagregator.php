@@ -163,17 +163,9 @@ if ( ! class_exists( 'Tagregator' ) ) {
 			);
 
 			wp_register_style(
-				self::PREFIX . 'components',
-				plugins_url( 'css/style.css', dirname( __FILE__ ) ),
-				array(),
-				self::VERSION,
-				'all'
-			);
-
-			wp_register_style(
 				self::PREFIX . 'front-end',
-				plugins_url( 'css/front-end.css', dirname( __FILE__ ) ),
-				array( 'font-awesome', self::PREFIX . 'components' ),
+				plugins_url( 'css/style.css', dirname( __FILE__ ) ),
+				array( 'font-awesome' ),
 				self::VERSION,
 				'all'
 			);
