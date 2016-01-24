@@ -19,8 +19,8 @@ $logos = array(
 <script type="text/javascript">
 	var tggrData = {
 		ApiUrl:          '<?php echo get_json_url(); ?>',
-		mediaTypes:      <?php echo json_encode( $media_cpts ); ?>,
-		logos:           <?php echo json_encode( $logos ); ?>,
+		mediaTypes:      <?php echo wp_json_encode( $media_cpts ); ?>,
+		logos:           <?php echo wp_json_encode( $logos ); ?>,
 		hashtag:         '<?php echo esc_js( $attributes['hashtag'] ); ?>',
 		refreshInterval: <?php echo esc_js( $this->refresh_interval ); ?>
 	};
