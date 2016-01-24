@@ -27,7 +27,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 		 */
 		protected function __construct() {
 			$this->view_folder   = dirname( __DIR__ ) . '/views/'. str_replace( '.php', '', basename( __FILE__ ) );
-			$this->setting_names = array( 'API Key', 'Highlighted Accounts' );
+			$this->setting_names = array( 'API Key', 'Highlighted Accounts', 'Banned Accounts' );
 
 			foreach ( $this->setting_names as $key ) {
 				$this->default_settings[ strtolower( str_replace( ' ', '_', $key ) ) ] = '';

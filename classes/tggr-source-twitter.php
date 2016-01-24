@@ -28,7 +28,7 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 		 */
 		protected function __construct() {
 			$this->view_folder   = dirname( __DIR__ ) . '/views/'. str_replace( '.php', '', basename( __FILE__ ) );
-			$this->setting_names = array( 'Consumer Key', 'Consumer Secret', 'Highlighted Accounts', '_bearer_token', '_newest_tweet_id' );
+			$this->setting_names = array( 'Consumer Key', 'Consumer Secret', 'Highlighted Accounts', 'Banned Accounts', '_bearer_token', '_newest_tweet_id' );
 
 			foreach ( $this->setting_names as $key ) {
 				$this->default_settings[ strtolower( str_replace( ' ', '_', $key ) ) ] = '';

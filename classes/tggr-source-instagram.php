@@ -27,8 +27,8 @@ if ( ! class_exists( 'TGGRSourceInstagram' ) ) {
 		 */
 		protected function __construct() {
 			$this->view_folder   = dirname( __DIR__ ) . '/views/'. str_replace( '.php', '', basename( __FILE__ ) );
-			$this->setting_names = array( 'Client ID', 'Highlighted Accounts', '_newest_media_id' );
-			
+			$this->setting_names = array( 'Client ID', 'Highlighted Accounts', 'Banned Accounts', '_newest_media_id' );
+
 			foreach ( $this->setting_names as $key ) {
 				$this->default_settings[ strtolower( str_replace( ' ', '_', $key ) ) ] = '';
 			}
