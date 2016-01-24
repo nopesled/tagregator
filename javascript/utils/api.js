@@ -23,7 +23,7 @@ export default {
 		args = args || {};
 		args.type = tggrData.mediaTypes;
 		args.filter = args.filter || {};
-		args.filter.posts_per_page = 100;
+		args.filter.posts_per_page = 50;
 		args.filter.hashtag = tggrData.hashtag;
 		args.filter.orderby = 'date';
 		args.filter.order = 'DESC';
