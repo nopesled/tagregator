@@ -1,3 +1,16 @@
-.react-boilerplate-widget {
-	background-color: red;
+
+.loading-indicator {
+	height: 25px;
+	width: 100%;
+
+	&.is-loading {
+		background: red;
+	}
+}
+
+.tggr-stream:after {
+	content: "";
+	display: table;
+	table-layout: fixed;
+	clear: both;
 }

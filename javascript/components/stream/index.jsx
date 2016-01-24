@@ -1,4 +1,6 @@
 import React from 'react';
+import classNames from 'classnames';
+import isEqual from 'lodash/lang/isEqual';
 
 // Internal
 import API from '../../utils/api';
@@ -11,33 +13,37 @@ import Flickr from '../flickr';
 
 require( './style.scss' );
 
-/**
- * Method to retrieve state from Stores
- */
-function getState() {
-	return {
-		data: MediaStore.getItems(),
-	};
-}
-
 var _interval;
 
 export default React.createClass({
 	displayName: 'Stream',
 
 	getInitialState: function() {
-		return getState();
+		return {
+			fetching: false,
+			data: MediaStore.getItems(),
+		}
+	},
+
+	getItems: function() {
+		if ( ! this.state.fetching ) {
+			this.setState( { fetching: true } );
+			API.getItems();
+			if ( 'undefined' === typeof _interval ) {
+				_interval = setInterval( this.getItems, 10000 ); // 10 seconds
+			}
+		}
 	},
 
 	componentDidMount: function() {
 		MediaStore.addChangeListener( this._onChange );
-		API.getItems();
-		_interval = setInterval( API.getItems, 30000 );
+		this.getItems();
 	},
 
 	componentDidUpdate: function( prevProps, prevState ) {
-		if ( prevProps !== this.props ) {
-			API.getItems();
+		if ( ! isEqual( prevProps, this.props ) ) {
+			clearInterval( _interval );
+			this.getItems();
 		}
 	},
 
@@ -47,10 +53,14 @@ export default React.createClass({
 	},
 
 	_onChange: function() {
-		this.setState( getState() );
+		this.setState( {
+			fetching: false,
+			data: MediaStore.getItems(),
+		} );
 	},
 
 	render: function() {
+		let loadingClasses;
 		let items = this.state.data.map( function( item, i ) {
 			let rendered;
 
@@ -72,8 +82,14 @@ export default React.createClass({
 			return rendered;
 		} );
 
+		loadingClasses = classNames( {
+			'loading-indicator': true,
+			'is-loading': this.state.fetching,
+		} );
+
 		return (
 			<div className="tggr-stream">
+				<div className={ loadingClasses }><span className='screen-reader-text'>Loading More</span></div>
 				{ items }
 			</div>
 		);
