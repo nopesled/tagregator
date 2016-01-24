@@ -4,6 +4,7 @@ import AppDispatcher from '../dispatcher/dispatcher';
 import AppConstants from '../constants/constants';
 
 import find from 'lodash/find';
+import unionBy from 'lodash/unionBy';
 
 var CHANGE_EVENT = 'change';
 
@@ -25,7 +26,7 @@ function _loadItems( data ) {
 		let bDate = new Date( b.date );
 		return bDate - aDate;
 	} );
-	_items = data;
+	_items = unionBy( data, _items, 'ID' );
 }
 
 let MediaStore = assign( {}, EventEmitter.prototype, {
