@@ -27,6 +27,11 @@ function _loadItems( data ) {
 		return bDate - aDate;
 	} );
 	_items = unionBy( data, _items, 'ID' );
+	// Truncate to only the top 500 items, we don't need this
+	// page growing forever (will continue to load new items)
+	if ( _items.length > 500 ) {
+		_items = _items.splice( 0, 500 );
+	}
 }
 
 let MediaStore = assign( {}, EventEmitter.prototype, {
