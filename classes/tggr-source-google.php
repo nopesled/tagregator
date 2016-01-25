@@ -158,7 +158,7 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 				$response = wp_remote_get( $url );
 				$body     = json_decode( wp_remote_retrieve_body( $response ) );
 
-				if ( isset( $body->updated ) && strtotime( $body->updated ) > $last_updated_activities && ! empty( $body->items ) ) {
+				if ( ( isset( $body->updated ) && strtotime( $body->updated ) > $last_updated_activities ) || ! empty( $body->items ) ) {
 					$activities = $body->items;
 				}
 			}
@@ -255,15 +255,15 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 			$postmeta = get_post_custom( $post['ID'] );
 			$author = array(
 				'name'     => $postmeta['author_name'][0],
-				'username' => $postmeta['author_username'][0],
+				'username' => $postmeta['author_name'][0],
 				'image'    => $postmeta['author_image_url'][0],
 			);
 			$extra_fields = array(
 				'sourceId'         => $postmeta['source_id'][0],
-				'mediaPermalink'   => $postmeta['media_permalink'][0],
-				'author'           => $author,
+				'mediaPermalink'   => $postmeta['post_permalink'][0],
+				'googleAuthor'     => $author,
 				'media'            => isset( $postmeta['media'][0] ) ? maybe_unserialize( $postmeta['media'][0] ) : array(),
-				'cssClasses'       => self::get_css_classes( $post['ID'], $postmeta['author_username'][0] ),
+				'cssClasses'       => self::get_css_classes( $post['ID'], $postmeta['author_name'][0] ),
 				'showExcerpt'      => self::show_excerpt( $post ),
 			);
 
