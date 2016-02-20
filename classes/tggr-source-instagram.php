@@ -123,6 +123,7 @@ if ( ! class_exists( 'TGGRSourceInstagram' ) ) {
 				$hashtag,
 				TGGRSettings::get_instance()->settings[ __CLASS__ ]['_newest_media_id']
 			);
+			$media = $this->remove_banned_items( $media );
 
 			$this->import_new_posts( $this->convert_items_to_posts( $media, $hashtag ) );
 			self::update_newest_media_id( $hashtag );
@@ -160,6 +161,30 @@ if ( ! class_exists( 'TGGRSourceInstagram' ) ) {
 			self::log( __METHOD__, 'Results', compact( 'client_id', 'hashtag', 'max_id', 'response' ) );
 
 			return $media;
+		}
+
+		/**
+		 * Remove items from banned users before they're imported into wordpress.
+		 *
+		 * @param array $items
+		 * @return array
+		 */
+		public function remove_banned_items( $items ) {
+			if ( $items ) {
+				$banned_accounts = explode(
+					',',
+					strtolower( TGGRSettings::get_instance()->settings[ __CLASS__ ]['banned_accounts'] )
+				);
+				$banned_accounts = array_map( function( $username ) { return trim( $username ); }, $banned_accounts );
+				foreach ( $items as $key => $item ) {
+					if ( in_array( strtolower( $item->user->username ), $banned_accounts ) ) {
+						self::log( __METHOD__, 'Banned account item', $item );
+						unset( $items[ $key ] );
+					}
+				}
+			}
+
+			return $items;
 		}
 
 		/**

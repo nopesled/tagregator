@@ -130,6 +130,7 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 				$hashtag,
 				TGGRSettings::get_instance()->settings[ __CLASS__ ]['_newest_activity_date']
 			);
+			$activities = $this->remove_banned_items( $activities );
 
 			$this->import_new_posts( $this->convert_items_to_posts( $activities, $hashtag ) );
 			self::update_newest_activity_date( $hashtag );
@@ -166,6 +167,30 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 			self::log( __METHOD__, 'Results', compact( 'api_key', 'hashtag', 'last_updated_activities', 'response' ) );
 
 			return $activities;
+		}
+
+		/**
+		 * Remove items from banned users before they're imported into wordpress.
+		 *
+		 * @param array $items
+		 * @return array
+		 */
+		public function remove_banned_items( $items ) {
+			if ( $items ) {
+				$banned_accounts = explode(
+					',',
+					strtolower( TGGRSettings::get_instance()->settings[ __CLASS__ ]['banned_accounts'] )
+				);
+				$banned_accounts = array_map( function( $username ) { return trim( $username ); }, $banned_accounts );
+				foreach ( $items as $key => $item ) {
+					if ( in_array( strtolower( $item->actor->id ), $banned_accounts ) ) {
+						self::log( __METHOD__, 'Banned account item', $item );
+						unset( $items[ $key ] );
+					}
+				}
+			}
+
+			return $items;
 		}
 
 		/**

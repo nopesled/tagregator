@@ -206,6 +206,7 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 				$hashtag,
 				TGGRSettings::get_instance()->settings[ __CLASS__ ]['_newest_tweet_id']
 			);
+			$tweets = $this->remove_banned_items( $tweets );
 
 			$this->import_new_posts( $this->convert_items_to_posts( $tweets, $hashtag ) );
 			self::update_newest_tweet_id( $hashtag );
@@ -257,6 +258,30 @@ if ( ! class_exists( 'TGGRSourceTwitter' ) ) {
 			self::log( __METHOD__, 'Results', compact( 'bearer_token', 'hashtag', 'since_id', 'response' ) );
 
 			return $tweets;
+		}
+
+		/**
+		 * Remove items from banned users before they're imported into wordpress.
+		 *
+		 * @param array $items
+		 * @return array
+		 */
+		public function remove_banned_items( $items ) {
+			if ( $items ) {
+				$banned_accounts = explode(
+					',',
+					strtolower( TGGRSettings::get_instance()->settings[ __CLASS__ ]['banned_accounts'] )
+				);
+				$banned_accounts = array_map( function( $username ) { return trim( $username ); }, $banned_accounts );
+				foreach ( $items as $key => $item ) {
+					if ( in_array( strtolower( $item->user->screen_name ), $banned_accounts ) ) {
+						self::log( __METHOD__, 'Banned account item', $item );
+						unset( $items[ $key ] );
+					}
+				}
+			}
+
+			return $items;
 		}
 
 		/**

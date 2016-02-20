@@ -125,6 +125,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 				$hashtag,
 				TGGRSettings::get_instance()->settings[ __CLASS__ ]['_newest_media_date']
 			);
+			$media = $this->remove_banned_items( $media );
 
 			$this->import_new_posts( $this->convert_items_to_posts( $media, $hashtag ) );
 			self::update_newest_media_date( $hashtag );
@@ -162,6 +163,30 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 			self::log( __METHOD__, 'Results', compact( 'api_key', 'hashtag', 'min_upload_date', 'response' ) );
 
 			return $media;
+		}
+
+		/**
+		 * Remove items from banned users before they're imported into wordpress.
+		 *
+		 * @param array $items
+		 * @return array
+		 */
+		public function remove_banned_items( $items ) {
+			if ( $items ) {
+				$banned_accounts = explode(
+					',',
+					strtolower( TGGRSettings::get_instance()->settings[ __CLASS__ ]['banned_accounts'] )
+				);
+				$banned_accounts = array_map( function( $username ) { return trim( $username ); }, $banned_accounts );
+				foreach ( $items as $key => $item ) {
+					if ( in_array( strtolower( $item->owner ), $banned_accounts ) ) {
+						self::log( __METHOD__, 'Banned account item', $item );
+						unset( $items[ $key ] );
+					}
+				}
+			}
+
+			return $items;
 		}
 
 		/**
