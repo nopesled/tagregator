@@ -291,6 +291,21 @@ if ( ! class_exists( 'TGGRMediaSource' ) ) {
 		}
 
 		/**
+		 * Pull the banned accounds from the settings
+		 *
+		 * @return array
+		 */
+		public static function get_banned_users() {
+			$banned_accounts = explode(
+				',',
+				strtolower( TGGRSettings::get_instance()->settings[ get_called_class() ]['banned_accounts'] )
+			);
+			$banned_accounts = array_map( function( $username ) { return trim( $username ); }, $banned_accounts );
+
+			return $banned_accounts;
+		}
+
+		/**
 		 * Gets all of the unique IDs for existing posts from a given source
 		 * This is used to prevent inserting duplicate items into the database. It's expensive, but necessary because of race conditions.
 		 * It only happens during the AJAX calls to get new content, so the user won't notice anyway.

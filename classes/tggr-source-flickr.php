@@ -173,11 +173,7 @@ if ( ! class_exists( 'TGGRSourceFlickr' ) ) {
 		 */
 		public function remove_banned_items( $items ) {
 			if ( $items ) {
-				$banned_accounts = explode(
-					',',
-					strtolower( TGGRSettings::get_instance()->settings[ __CLASS__ ]['banned_accounts'] )
-				);
-				$banned_accounts = array_map( function( $username ) { return trim( $username ); }, $banned_accounts );
+				$banned_accounts = self::get_banned_users();
 				foreach ( $items as $key => $item ) {
 					if ( in_array( strtolower( $item->owner ), $banned_accounts ) ) {
 						self::log( __METHOD__, 'Banned account item', $item );
