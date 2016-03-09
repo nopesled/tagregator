@@ -16,6 +16,24 @@ require( './style.scss' );
 
 var _interval;
 
+/**
+ * Determines if an element is visible in the viewport
+ *
+ * Based on http://stackoverflow.com/a/488073/450127
+ * Modified to detect if the entire element is visible (rather than just part)
+ *
+ * @param {string} element
+ * @returns {boolean}
+ */
+function isScrolledIntoView( element ) {
+	var docViewTop = window.scrollX,
+		docViewBottom = docViewTop + window.innerHeight,
+		elementTop = element.getBoundingClientRect().top,
+		elementBottom = element.getBoundingClientRect().bottom;
+
+	return ( ( docViewTop < elementTop ) && ( docViewBottom > elementBottom ) );
+}
+
 export default React.createClass({
 	displayName: 'Stream',
 
@@ -28,7 +46,7 @@ export default React.createClass({
 
 	getItems: function() {
 		const intervalSeconds = tggrData.refreshInterval || 10;
-		if ( ! this.state.fetching ) {
+		if ( ! this.state.fetching && isScrolledIntoView( this.refs['loading-indicator'] ) ) {
 			this.setState( { fetching: true } );
 			API.getItems();
 			if ( 'undefined' === typeof _interval ) {
@@ -94,7 +112,7 @@ export default React.createClass({
 
 		return (
 			<div className="tggr-stream">
-				<div className={ loadingClasses }><span className='screen-reader-text'>Loading More</span></div>
+				<div className={ loadingClasses } ref='loading-indicator'><span className='screen-reader-text'>Loading More</span></div>
 				<div className="tggr-media-items">
 					{ items }
 				</div>
