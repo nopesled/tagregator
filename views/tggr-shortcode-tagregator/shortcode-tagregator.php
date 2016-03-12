@@ -22,6 +22,7 @@ $logos = array(
 		mediaTypes:      <?php echo wp_json_encode( $media_cpts ); ?>,
 		logos:           <?php echo wp_json_encode( $logos ); ?>,
 		hashtag:         '<?php echo esc_js( $attributes['hashtag'] ); ?>',
+		layout:          '<?php echo esc_js( $attributes['layout'] ); ?>',
 		refreshInterval: <?php echo esc_js( $this->refresh_interval ); ?>
 	};
 </script>

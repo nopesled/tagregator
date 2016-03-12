@@ -81,21 +81,22 @@ export default React.createClass({
 
 	render: function() {
 		let loadingClasses;
+		let layout = tggrData.layout || 'three-column';
 		let items = this.state.data.map( function( item, i ) {
 			let rendered;
 
 			switch ( item.type ) {
 				case 'tggr-tweets':
-					rendered = ( <Tweet key={ i } item={ item } /> );
+					rendered = ( <Tweet key={ i } item={ item } layout={ layout } /> );
 					break;
 				case 'tggr-instagram':
-					rendered = ( <Instagram key={ i } item={ item } /> );
+					rendered = ( <Instagram key={ i } item={ item } layout={ layout } /> );
 					break;
 				case 'tggr-flickr':
-					rendered = ( <Flickr key={ i } item={ item } /> );
+					rendered = ( <Flickr key={ i } item={ item } layout={ layout } /> );
 					break;
 				case 'tggr-google':
-					rendered = ( <Google key={ i } item={ item } /> );
+					rendered = ( <Google key={ i } item={ item } layout={ layout } /> );
 					break;
 				default:
 					rendered = ( <div key={ i }>No handler for this media type: { item.type }</div> );

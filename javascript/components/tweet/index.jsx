@@ -17,11 +17,12 @@ export default React.createClass({
 		}
 		let author = item.tweetAuthor;
 		let content = item.showExcerpt ? item.excerpt : item.content;
+		let size = ( this.props.layout === 'one-column' ) ? 'medium' : 'small';
 
-		let media = item.media.map( function( image, i ) {
+		let media = item.media.map( ( image, i ) => {
 			let img;
 			if ( 'image' === image.type ) {
-				img = ( <img key={ i } src={ `${ image.url }:small` } alt="" /> );
+				img = ( <img key={ i } src={ `${ image.url }:${ size }` } alt="" /> );
 			}
 			return img;
 		} );
