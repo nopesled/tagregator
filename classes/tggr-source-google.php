@@ -62,6 +62,11 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 			add_filter( 'excerpt_length',                             __CLASS__ . '::get_excerpt_length' );
 			add_filter( 'json_prepare_post',                          array( $this, 'get_extra_item_data' ), 10, 3 );
 
+			add_filter( 'manage_edit-' . self::POST_TYPE_SLUG . '_columns', __CLASS__ . '::add_columns' );
+			add_filter( 'manage_edit-' . self::POST_TYPE_SLUG . '_sortable_columns', __CLASS__ . '::add_columns' );
+			add_action( 'manage_' . self::POST_TYPE_SLUG . '_posts_custom_column', array( $this, 'display_columns' ), 10, 2 );
+			add_filter( 'request', array( $this, 'sort_by_author' ) );
+
 			add_filter( Tagregator::PREFIX . 'default_settings',      __CLASS__ . '::register_default_settings' );
 		}
 
@@ -291,6 +296,24 @@ if ( ! class_exists( 'TGGRSourceGoogle' ) ) {
 			$_post = array_merge( $_post, $extra_fields );
 
 			return $_post;
+		}
+
+		public function sort_by_author( $vars ) {
+			$class = get_called_class();
+			if ( array_key_exists( 'orderby', $vars ) && $class::POST_TYPE_SLUG == $vars['post_type'] ) {
+				if ( 'Author' == $vars['orderby'] ) {
+					$vars['orderby'] = 'meta_value';
+					$vars['meta_key'] = 'author_name';
+				}
+			}
+			return $vars;
+		}
+
+		public function display_columns( $column, $post_id ) {
+			if ( 'media-author' == $column ) {
+				$author = get_post_meta( $post_id, 'author_name', true );
+				echo $author;
+			}
 		}
 	} // end TGGRSourceGoogle
 }

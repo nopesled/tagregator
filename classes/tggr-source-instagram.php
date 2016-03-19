@@ -66,6 +66,11 @@ if ( ! class_exists( 'TGGRSourceInstagram' ) ) {
 			add_filter( 'the_content',                                        __CLASS__ . '::link_usernames' );
 			add_filter( 'excerpt_length',                                     __CLASS__ . '::get_excerpt_length' );
 			add_filter( 'json_prepare_post',                                  array( $this, 'get_extra_item_data' ), 10, 3 );
+
+			add_filter( 'manage_edit-' . self::POST_TYPE_SLUG . '_columns', __CLASS__ . '::add_columns' );
+			add_filter( 'manage_edit-' . self::POST_TYPE_SLUG . '_sortable_columns', __CLASS__ . '::add_columns' );
+			add_action( 'manage_' . self::POST_TYPE_SLUG . '_posts_custom_column', array( $this, 'display_columns' ), 10, 2 );
+			add_filter( 'request', array( $this, 'sort_by_author' ) );
 		}
 
 		/**

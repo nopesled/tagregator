@@ -136,6 +136,29 @@ if ( ! class_exists( 'TGGRMediaSource' ) ) {
 			return apply_filters( Tagregator::PREFIX . 'taxonomy_hashtag_params', $params );
 		}
 
+		public static function add_columns( $columns ) {
+			$columns['media-author'] = 'Author';
+			return $columns;
+		}
+
+		public function sort_by_author( $vars ) {
+			$class = get_called_class();
+			if ( array_key_exists( 'orderby', $vars ) && $class::POST_TYPE_SLUG == $vars['post_type'] ) {
+				if ( 'Author' == $vars['orderby'] ) {
+					$vars['orderby'] = 'meta_value';
+					$vars['meta_key'] = 'author_username';
+				}
+			}
+			return $vars;
+		}
+
+		public function display_columns( $column, $post_id ) {
+			if ( 'media-author' == $column ) {
+				$author = get_post_meta( $post_id, 'author_username', true );
+				echo $author;
+			}
+		}
+
 		/**
 		 * Registers default settings with TGGRSettings
 		 * @mvc Model
