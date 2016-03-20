@@ -17,13 +17,12 @@ export default React.createClass({
 		}
 		let author = item.googleAuthor;
 		let content = item.showExcerpt ? item.excerpt : item.content;
+		let size = ( this.props.layout === 'one-column' ) ? 'large_url' : 'small_url';
 
 		let media = item.media.map( function( image, i ) {
 			let img;
-			if ( 'image' === image.type ) {
-				img = ( <img key={ i } src={ `${ image.small_url }` } alt="" /> );
-			} else {
-				console.log( "Non-image media", image );
+			if ( 'image' === image.type && image[size] ) {
+				img = ( <img key={ i } src={ `${ image[size] }` } alt="" /> );
 			}
 			return img;
 		} );
@@ -38,9 +37,8 @@ export default React.createClass({
 
 				<div className="tggr-item-content">
 					<div dangerouslySetInnerHTML={ this.getContent( content ) } />
-					{ item.showExcerpt && <p><a href={ item.mediaPermalink }>Read the rest of this post on Google+</a></p> }
-
 					{ media }
+					{ item.showExcerpt && <p><a href={ item.mediaPermalink }>Read the rest of this post on Google+</a></p> }
 				</div>
 
 				<a href={ item.mediaPermalink } className="tggr-timestamp">

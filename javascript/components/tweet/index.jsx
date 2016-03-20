@@ -21,7 +21,7 @@ export default React.createClass({
 
 		let media = item.media.map( ( image, i ) => {
 			let img;
-			if ( 'image' === image.type ) {
+			if ( 'image' === image.type && image[size] ) {
 				img = ( <img key={ i } src={ `${ image.url }:${ size }` } alt="" /> );
 			}
 			return img;
