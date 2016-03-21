@@ -28,10 +28,9 @@ var _interval;
 function isScrolledIntoView( element ) {
 	var docViewTop = window.scrollX,
 		docViewBottom = docViewTop + window.innerHeight,
-		elementTop = element.getBoundingClientRect().top,
-		elementBottom = element.getBoundingClientRect().bottom;
+		elementTop = element.getBoundingClientRect().top;
 
-	return ( ( docViewTop < elementTop ) && ( docViewBottom > elementBottom ) );
+	return ( ( docViewTop < elementTop ) && ( docViewBottom > elementTop ) );
 }
 
 export default React.createClass({
@@ -46,7 +45,7 @@ export default React.createClass({
 
 	getItems: function() {
 		const intervalSeconds = tggrData.refreshInterval || 10;
-		if ( ! this.state.fetching && isScrolledIntoView( this.refs['loading-indicator'] ) ) {
+		if ( ! this.state.fetching && isScrolledIntoView( this.refs.container ) ) {
 			this.setState( { fetching: true } );
 			API.getItems();
 			if ( 'undefined' === typeof _interval ) {
@@ -80,7 +79,6 @@ export default React.createClass({
 	},
 
 	render: function() {
-		let loadingClasses;
 		let layout = tggrData.layout || 'three-column';
 		let items = this.state.data.map( function( item, i ) {
 			let rendered;
@@ -106,14 +104,15 @@ export default React.createClass({
 			return rendered;
 		} );
 
-		loadingClasses = classNames( {
-			'tggr-loading': true,
-			'is-loading': this.state.fetching,
-		} );
-
 		return (
-			<div className="tggr-stream">
-				<div className={ loadingClasses } ref='loading-indicator'><span className='assistive-text screen-reader-text'>Loading More</span></div>
+			<div className="tggr-stream" ref='container'>
+				{ this.state.fetching ?
+					<div className='tggr-loading'>
+						<i className="icon icon-spinner icon-spin"></i>
+						<span className='assistive-text screen-reader-text'>Loading More</span>
+					</div> :
+					null
+				}
 				<div className="tggr-media-items">
 					{ items }
 				</div>

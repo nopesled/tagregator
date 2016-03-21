@@ -34,10 +34,7 @@
 .tggr-loading {
 	height: 25px;
 	width: 100%;
-
-	&.is-loading {
-		background: red;
-	}
+	text-align: center;
 }
 
 .tggr-stream {
