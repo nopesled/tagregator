@@ -113,7 +113,7 @@ export default React.createClass({
 
 		return (
 			<div className="tggr-stream">
-				<div className={ loadingClasses } ref='loading-indicator'><span className='screen-reader-text'>Loading More</span></div>
+				<div className={ loadingClasses } ref='loading-indicator'><span className='assistive-text screen-reader-text'>Loading More</span></div>
 				<div className="tggr-media-items">
 					{ items }
 				</div>
