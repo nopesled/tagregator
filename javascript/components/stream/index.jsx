@@ -59,7 +59,7 @@ export default React.createClass({
 		this.getItems();
 	},
 
-	componentDidUpdate: function( prevProps, prevState ) {
+	componentDidUpdate: function( prevProps ) {
 		if ( ! isEqual( prevProps, this.props ) ) {
 			clearInterval( _interval );
 			this.getItems();
