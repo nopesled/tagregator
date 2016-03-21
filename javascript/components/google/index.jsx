@@ -3,7 +3,7 @@ import React from 'react';
 // Internal dependencies
 import ContentMixin from '../../utils/content-mixin';
 
-// require( './style.scss' );
+require( './style.scss' );
 
 export default React.createClass({
 	displayName: 'Google',
