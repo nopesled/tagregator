@@ -1,6 +1,5 @@
 <div id="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>media-item-container" class="<?php echo esc_attr( $attributes['layout'] ); ?>" data-hashtag="<?php echo esc_attr( $attributes['hashtag'] ); ?>">
-	<img src="<?php echo esc_url( admin_url( 'images/spinner.gif' ) ); ?>" alt="Spinner" />
-	Loading new posts...
+	<p>Loading new posts.</p>
 </div> <!-- end media-item-container -->
 
 <?php

@@ -107,13 +107,13 @@ export default React.createClass({
 		return (
 			<div className="tggr-stream" ref='container'>
 				{ this.state.fetching ?
-					<div className='tggr-loading'>
+					<div className='tggr-loading' style={ { height: '20px' } }>
 						<i className="icon icon-spinner icon-spin"></i>
 						<span className='assistive-text screen-reader-text'>Loading More</span>
 					</div> :
 					null
 				}
-				<div className="tggr-media-items">
+				<div className="tggr-media-items" style={ { marginTop: this.state.fetching ? '15px' : '35px' } }>
 					{ items }
 				</div>
 			</div>

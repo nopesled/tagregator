@@ -18,6 +18,7 @@
 #tggr-media-item-container {
 	-ms-word-wrap: break-word;
 	word-wrap: break-word;
+	padding-top: 1px; // Hack to avoid margin collapses :(
 }
 
 #tggr-loading-new-posts {
