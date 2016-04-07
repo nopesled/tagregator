@@ -44,7 +44,7 @@ export default React.createClass({
 
 	getItems: function() {
 		const intervalSeconds = tggrData.refreshInterval || 10;
-		if ( ! this.state.fetching && isScrolledIntoView( this.refs.container ) ) {
+		if ( ! this.state.fetching && ( isScrolledIntoView( this.refs.container ) || this.state.data.length < 1 ) ) {
 			this.setState( { fetching: true } );
 			API.getItems();
 			if ( 'undefined' === typeof _interval ) {
@@ -102,6 +102,10 @@ export default React.createClass({
 
 			return rendered;
 		} );
+
+		if ( items.length < 1 && ! this.state.fetching ) {
+			items = ( <div><p>No results found for this hashtag (yet).</p></div> );
+		}
 
 		return (
 			<div className="tggr-stream" ref='container'>
