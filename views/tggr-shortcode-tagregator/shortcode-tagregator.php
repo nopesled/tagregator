@@ -1,4 +1,4 @@
-<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>media-item-container" class="<?php echo esc_attr( $attributes['layout'] ); ?>" data-hashtag="<?php echo esc_attr( $attributes['hashtag'] ); ?>">
+<div id="<?php echo esc_attr( Tagregator::CSS_PREFIX ); ?>media-item-container" class="<?php echo esc_attr( $attributes['layout'] ); ?>" data-hashtag="<?php echo esc_attr( $attributes['hashtag'] ); ?>" aria-live="polite">
 	<p>Loading new posts.</p>
 </div> <!-- end media-item-container -->
 
