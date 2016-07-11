@@ -72,5 +72,10 @@ if ( tggr_requirements_met() ) {
 		register_deactivation_hook( __FILE__, array( $GLOBALS['tggr'], 'deactivate' ) );
 	}
 } else {
+	if( !function_exists( 'add_action' ) ) {
+		die('Do not access this file directly');
+	}
+	else {
 	add_action( 'admin_notices', 'tggr_requirements_error' );
+	}
 }
